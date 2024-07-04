@@ -92,10 +92,9 @@ exports.AoiMySQL = class AoiMySQL extends EventEmitter {
             await this._createTableIfNotExists(table);
             let [rows] = await this._client.db.query(`SELECT * FROM \`${table}\``);
             rows = rows.filter(query).map(row => row.id);
-            if (rows.length > 0) {
-                const placeholders = rows.map(() => '?').join(',');
-                await this._client.db.query(`DELETE FROM \`${table}\` WHERE id IN (${placeholders})`, rows);
-            }
+            if (!rows.length > 0) return;
+            const placeholders = rows.map(() => '?').join(',');
+            await this._client.db.query(`DELETE FROM \`${table}\` WHERE id IN (${placeholders})`, rows);
         } catch (err) {
             this.emit('error', err, this._client);
         }
