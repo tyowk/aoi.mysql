@@ -30,3 +30,8 @@ const db = new Database(client, {
 
 // rest of your index.js..
 ```
+<br>
+<br>
+<div align="center">
+<img href="#" width="100" src="https://aoi.js.org/_astro/icon_new.C4KTn9Lv_Z232q1W.webp">
+</div>
