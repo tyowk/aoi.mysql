@@ -2,7 +2,7 @@ const { createPool } = require('mysql2/promise');
 const { createConsoleMessage } = require('aoi.js/src/classes/AoiError');
 const EventEmitter = require('events');
 
-exports.AoiMySQL = class AoiMySQL extends EventEmitter {
+exports.Database = class AoiMySQL extends EventEmitter {
     constructor(client, options) {
         super();
         this._client = client;
