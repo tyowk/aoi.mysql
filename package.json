@@ -3,7 +3,6 @@
     "version": "0.0.1",
     "description": "Implementation of MySQL in Aoi.js",
     "main": "src/index.js",
-    "type": "commonjs",
     "scripts": {
         "start": "node src/index.js",
         "dev": "nodemon test/client.js"
@@ -16,9 +15,6 @@
         "mysql2",
         "database"
     ],
-    "engines": {
-        "node": ">=16.x"
-    },
     "author": "Tyowk <tyowk@outlook.com>",
     "license": "MIT",
     "dependencies": {
