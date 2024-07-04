@@ -1,2 +1,1 @@
-# aoi.mysql
-Implementation of MySQL in Aoi.js
+<h2 align="center">Soon!</h2>
