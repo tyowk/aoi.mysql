@@ -12,10 +12,10 @@ exports.AoiMySQL = class AoiMySQL extends EventEmitter {
 
     async _connect() {
         try {
-            this._client.db = await createPool(this._options.url ?? this._options);
             if (!this._options.tables || this._options.tables.length === 0) throw new Error('Missing variable tables, please provide at least one table.');
             if (this._options.tables.includes('__aoijs_vars__')) throw new Error('"__aoijs_vars__" is reserved as a table name.');
 
+            this._client.db = createPool(this._options.url ?? this._options);
             this._client.db.tables = [...this._options.tables, '__aoijs_vars__'];
             for (const table of this._client.db.tables) {
                 await this._createTableIfNotExists(table);
@@ -165,18 +165,20 @@ exports.AoiMySQL = class AoiMySQL extends EventEmitter {
         this._client.db.findOne = this._findOne.bind(this);
         this._client.db.findMany = this.findMany.bind(this);
         this._client.db.all = this.all.bind(this);
+        this._client.db.type = 'aoi.mysql';
+        this._client.db.by = 'Made with ♥️ by Tyowk';
         this._client.db.db = {
             pool: this._client.db.pool,
             avgPing: this.ping.bind(this),
             ready: true,
-            readyAt: Date.now()
+            readyAt: Date.now(),
+            by: this._client.db.by,
+            type: this._client.db.type
         };
     }
 
     async _findOne(table, query) {
+        return null;
         // there is no aoi.js function use this function type
     }
 };
-
-
-//@  MADE WITH ♥️ BY TYOWK  @//
