@@ -45,7 +45,7 @@ const db = new Database(client, {
 <div align="center">
     <a href="https://aoi.js.org">
 <img src="https://aoi.js.org/_astro/icon_new.C4KTn9Lv_Z232q1W.webp" width="100">
-    </a>
+    </a><br>
     <a href="https://aoi.js.org/invite">
 <img src="https://img.shields.io/discord/773352845738115102?logo=discord&logoColor=white&color=3182b0&style=for-the-badge">
     </a>
