@@ -4,6 +4,7 @@
     
 [![NPM downloads](https://img.shields.io/npm/dt/aoi.mysql.svg?color=3182b0&style=for-the-badge)](https://npmjs.org/package/aoi.mysql)&nbsp;&nbsp;
 [![NPM version](http://img.shields.io/npm/v/aoi.mysql.svg?color=3182b0&style=for-the-badge)](http://npmjs.org/package/aoi.mysql)&nbsp;&nbsp;
+
 </div>
 <br>
 <p align="center">Aoi.MySQL makes it simple to connect your Aoi.js Discord bot to a MySQL database. With support for mysql2, you get reliable and fast database operations, perfect for any Aoi.js bot project.</p>
@@ -14,6 +15,7 @@
 ```bash
 npm install aoi.mysql
 ```
+
 <br>
 <h2 align="center">Setup</h2>
 
@@ -37,8 +39,14 @@ const db = new Database(client, {
 
 // rest of your index.js..
 ```
+
 <br>
 <br>
 <div align="center">
-<img href="#" width="100" src="https://aoi.js.org/_astro/icon_new.C4KTn9Lv_Z232q1W.webp">
+    <a href="https://aoi.js.org">
+<img src="https://aoi.js.org/_astro/icon_new.C4KTn9Lv_Z232q1W.webp" width="100">
+    </a>
+    <a href="https://aoi.js.org/invite">
+<img src="https://img.shields.io/discord/773352845738115102?logo=discord&logoColor=white&color=3182b0&style=for-the-badge">
+    </a>
 </div>
