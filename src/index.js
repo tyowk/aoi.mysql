@@ -15,7 +15,7 @@ exports.Database = class AoiMySQL extends EventEmitter {
         try {
             if (!this._options.tables || this._options.tables.length === 0) throw new Error('Missing variable tables, please provide at least one table.');
             if (this._options.tables.includes('__aoijs_vars__')) throw new Error('"__aoijs_vars__" is reserved as a table name.');
-
+            
             this._client.db = createPool(this._options.url ?? this._options);
             this._client.db.tables = [...this._options.tables, '__aoijs_vars__'];
             for (const table of this._client.db.tables) {
@@ -24,7 +24,7 @@ exports.Database = class AoiMySQL extends EventEmitter {
 
             this._assignMethods();
             this.emit('ready', this._client, this._client.db);
-            createConsoleMessage([
+            await createConsoleMessage([
                 { text: `Latency: ${await this.ping()}ms`, textColor: 'white' },
                 { text: `Successfully connected to MySQL`, textColor: 'white' },
                 { text: `Installed on v${require('../package.json').version || '0.0.0'}`, textColor: 'green' }
@@ -32,7 +32,7 @@ exports.Database = class AoiMySQL extends EventEmitter {
 
         } catch (err) {
             this.emit('error', err, this._client);
-            createConsoleMessage([
+            await createConsoleMessage([
                 { text: `Failed to connect to MySQL`, textColor: 'red' },
                 { text: err.message, textColor: 'white' }
             ], 'white', { text: ' aoi.mysql ', textColor: 'cyan' });
@@ -50,6 +50,7 @@ exports.Database = class AoiMySQL extends EventEmitter {
                 );`
             );
         } catch (err) {
+            console.error(err);
             this.emit('error', err, this._client);
         }
     }
@@ -59,8 +60,9 @@ exports.Database = class AoiMySQL extends EventEmitter {
             const value = this._variable.get(`${key}_${table}`)?.default;
             await this._createTableIfNotExists(table);
             const [rows] = await this._client.db.query(`SELECT value FROM \`${table}\` WHERE \`key\` = ?`, [`${key}_${id}`]);
-            return rows.length > 0 ? { value: rows[0].value } : ( value ? { value } : null );
+            return rows.length > 0 ? { value: rows[0].value } : (value ? { value } : null);
         } catch (err) {
+            console.error(err);
             this.emit('error', err, this._client);
         }
     }
@@ -73,6 +75,7 @@ exports.Database = class AoiMySQL extends EventEmitter {
                 [`${key}_${id}`, value, value]
             );
         } catch (err) {
+            console.error(err);
             this.emit('error', err, this._client);
         }
     }
@@ -85,6 +88,7 @@ exports.Database = class AoiMySQL extends EventEmitter {
                 await this._client.db.query(`DROP TABLE IF EXISTS \`${table}\``);
             }
         } catch (err) {
+            console.error(err);
             this.emit('error', err, this._client);
         }
     }
@@ -98,6 +102,7 @@ exports.Database = class AoiMySQL extends EventEmitter {
             const placeholders = rows.map(() => '?').join(',');
             await this._client.db.query(`DELETE FROM \`${table}\` WHERE id IN (${placeholders})`, rows);
         } catch (err) {
+            console.error(err);
             this.emit('error', err, this._client);
         }
     }
@@ -107,6 +112,7 @@ exports.Database = class AoiMySQL extends EventEmitter {
             await this._createTableIfNotExists(table);
             await this._client.db.query(`DELETE FROM \`${table}\` WHERE \`key\` = ?`, [`${key}_${id}`]);
         } catch (err) {
+            console.error(err);
             this.emit('error', err, this._client);
         }
     }
@@ -124,6 +130,7 @@ exports.Database = class AoiMySQL extends EventEmitter {
                 data: { value: row.value }
             }));
         } catch (err) {
+            console.error(err);
             this.emit('error', err, this._client);
             throw err;
         }
@@ -143,6 +150,7 @@ exports.Database = class AoiMySQL extends EventEmitter {
 
             return results.slice(0, list);
         } catch (err) {
+            console.error(err);
             this.emit('error', err, this._client);
         }
     }
@@ -153,34 +161,39 @@ exports.Database = class AoiMySQL extends EventEmitter {
             await this._client.db.query('SELECT 1');
             return Date.now() - start;
         } catch (err) {
+            console.error(err);
             this.emit('error', err, this._client);
             return -1;
         }
     }
 
     _assignMethods() {
-        this._client.db.get = this.get.bind(this);
-        this._client.db.set = this.set.bind(this);
-        this._client.db.drop = this.drop.bind(this);
-        this._client.db.delete = this.delete.bind(this);
-        this._client.db.deleteMany = this.deleteMany.bind(this);
-        this._client.db.findOne = this._findOne.bind(this);
-        this._client.db.findMany = this.findMany.bind(this);
-        this._client.db.all = this.all.bind(this);
-        this._client.db.type = 'aoi.mysql';
-        this._client.db.by = 'Made with ♥️ by Tyowk';
-        this._client.db.db = {
-            pool: this._client.db.pool,
-            avgPing: this.ping.bind(this),
-            ready: true,
-            readyAt: Date.now(),
-            by: this._client.db.by,
-            type: this._client.db.type
-        };
+        try {
+            this._client.db.get = this.get.bind(this);
+            this._client.db.set = this.set.bind(this);
+            this._client.db.drop = this.drop.bind(this);
+            this._client.db.delete = this.delete.bind(this);
+            this._client.db.deleteMany = this.deleteMany.bind(this);
+            this._client.db.findOne = this._findOne.bind(this);
+            this._client.db.findMany = this.findMany.bind(this);
+            this._client.db.all = this.all.bind(this);
+            this._client.db.type = 'aoi.mysql';
+            this._client.db.by = 'Made with ♥️ by Tyowk';
+            this._client.db.db = {
+                pool: this._client.db.pool,
+                avgPing: this.ping.bind(this),
+                ready: true,
+                readyAt: Date.now(),
+                by: this._client.db.by,
+                type: this._client.db.type
+            };
+        } catch (err) {
+            console.error(err);
+            this.emit('error', err, this._client);
+        }
     }
 
     async _findOne(table, query) {
-        return null;
-        // there is no aoi.js function use this function type
+        // _findOne method is not implemented in aoi.js.
     }
 };
