@@ -7,6 +7,7 @@ exports.Database = class AoiMySQL extends EventEmitter {
         super();
         this._client = client;
         this._options = options;
+        this._variable = this._client.variableManager.cache;
         this._connect();
     }
 
@@ -55,9 +56,10 @@ exports.Database = class AoiMySQL extends EventEmitter {
 
     async get(table, key, id = undefined) {
         try {
+            const value = this._variable.get(`${key}_${table}`)?.default
             await this._createTableIfNotExists(table);
             const [rows] = await this._client.db.query(`SELECT value FROM \`${table}\` WHERE \`key\` = ?`, [`${key}_${id}`]);
-            return rows.length > 0 ? { value: rows[0].value } : null;
+            return rows.length > 0 { value: rows[0].value } : (value ? { value } : null) ?? null
         } catch (err) {
             this.emit('error', err, this._client);
         }
