@@ -17,7 +17,7 @@ exports.Database = class AoiMySQL extends EventEmitter {
             if (!this._options?.url) throw new Error('Missing MySQL server URI in options.');
             if (!this._options?.tables || this._options?.tables.length === 0) throw new Error('No variable tables specified in options. Please provide at least one table.');
             if (this._options?.tables.includes('__aoijs_vars__')) throw new Error('AoiMySQL: "__aoijs_vars__" is reserved as a table name and cannot be used.');
-            
+
             this._client.db = createPool(this._options.url);
             this._client.db.tables = [...this._options.tables, '__aoijs_vars__'];
             for (const table of this._client.db.tables) {
@@ -59,15 +59,22 @@ exports.Database = class AoiMySQL extends EventEmitter {
 
     async get(table, key, id = undefined) {
         try {
-            const aoivars = [];
-            if (!this._variable?.has(key, table)) return;
-            const value = this._variable?.get(key, table)?.default;
+            const aoivars = ["cooldown", "setTimeout", "ticketChannel"];
             await this._createTableIfNotExists(table);
-            const [rows] = await this._client.db.query(`SELECT value FROM \`${table}\` WHERE \`key\` = ?`, [`${key}_${id}`]);
-            return rows.length > 0 ? { value: rows[0].value } : (value ? { value } : null);
+
+            if (aoivars.includes(key)) {
+                const [rows] = await this._client.db.query(`SELECT value FROM \`${table}\` WHERE \`key\` = ?`, [`${key}_${id}`]);
+                return rows.length > 0 ? { value: rows[0].value } : null;
+            } else {
+                if (!this._variable?.has(key, table)) return;
+                const value = this._variable?.get(key, table)?.default;
+                const [rows] = await this._client.db.query(`SELECT value FROM \`${table}\` WHERE \`key\` = ?`, [`${key}_${id}`]);
+                return rows.length > 0 ? { value: rows[0].value } : (value ? { value } : null);
+            }
         } catch (err) {
             console.error(err);
             this.emit('error', err, this._client.db, this._client);
+            return null;
         }
     }
 
@@ -149,6 +156,7 @@ exports.Database = class AoiMySQL extends EventEmitter {
         } catch (err) {
             console.error(err);
             this.emit('error', err, this._client.db, this._client);
+            return null;
         }
     }
 
@@ -160,6 +168,7 @@ exports.Database = class AoiMySQL extends EventEmitter {
         } catch (err) {
             console.error(err);
             this.emit('error', err, this._client.db, this._client);
+            return null;
         }
     }
 
