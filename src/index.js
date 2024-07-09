@@ -59,7 +59,9 @@ exports.Database = class AoiMySQL extends EventEmitter {
 
     async get(table, key, id = undefined) {
         try {
-            const value = this._variable?.get(`${key}_${table}`)?.default;
+            const aoivars = [];
+            if (!this._variable?.has(key, table)) return;
+            const value = this._variable?.get(key, table)?.default;
             await this._createTableIfNotExists(table);
             const [rows] = await this._client.db.query(`SELECT value FROM \`${table}\` WHERE \`key\` = ?`, [`${key}_${id}`]);
             return rows.length > 0 ? { value: rows[0].value } : (value ? { value } : null);
@@ -153,7 +155,7 @@ exports.Database = class AoiMySQL extends EventEmitter {
     async findOne(table, query) {
         try {
             await this._createTableIfNotExists(table);
-            const [rows] = await this._client.db.query(`SELECT * FROM \`${table}\` WHERE ${query} LIMIT 1`);
+            const [rows] = await this._client.db.query(`SELECT * FROM \`${table}\` WHERE ? LIMIT 1`, [query]);
             return rows.length > 0 ? rows[0] : null;
         } catch (err) {
             console.error(err);
