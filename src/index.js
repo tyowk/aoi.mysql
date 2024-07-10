@@ -64,12 +64,12 @@ exports.Database = class AoiMySQL extends EventEmitter {
 
             if (aoivars.includes(key)) {
                 const [rows] = await this._client.db.query(`SELECT value FROM \`${table}\` WHERE \`key\` = ?`, [`${key}_${id}`]);
-                return rows.length > 0 ? { value: rows[0].value } : null;
+                return rows.length > 0 ? rows[0] : null;
             } else {
                 if (!this._variable?.has(key, table)) return;
                 const value = this._variable?.get(key, table)?.default;
                 const [rows] = await this._client.db.query(`SELECT value FROM \`${table}\` WHERE \`key\` = ?`, [`${key}_${id}`]);
-                return rows.length > 0 ? { value: rows[0].value } : (value ? { value } : null);
+                return rows.length > 0 ? rows[0] : (value ? { value } : null);
             }
         } catch (err) {
             console.error(err);
