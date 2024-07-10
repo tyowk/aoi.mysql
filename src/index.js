@@ -138,7 +138,7 @@ exports.Database = class AoiMySQL extends EventEmitter {
         } catch (err) {
             console.error(err);
             this.emit('error', err, this._client.db, this._client);
-            throw err;
+            return null;
         }
     }
 
