@@ -16,7 +16,7 @@ exports.Database = class AoiMySQL extends EventEmitter {
             if (!this._client) throw new Error('Client instance is not defined.');
             if (!this._options?.url) throw new Error('Missing MySQL server URI in options.');
             if (!this._options?.tables || this._options?.tables.length === 0) throw new Error('No variable tables specified in options. Please provide at least one table.');
-            if (this._options?.tables.includes('__aoijs_vars__')) throw new Error('AoiMySQL: "__aoijs_vars__" is reserved as a table name and cannot be used.');
+            if (this._options?.tables.includes('__aoijs_vars__')) throw new Error('"__aoijs_vars__" is reserved as a table name and cannot be used.');
 
             this._client.db = createPool(this._options.url);
             this._client.db.tables = [...this._options.tables, '__aoijs_vars__'];
