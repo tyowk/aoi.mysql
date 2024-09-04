@@ -161,7 +161,7 @@ exports.Database = class AoiMySQL extends EventEmitter {
     }
 
     async findOne(table, query) {
-        try {
+        /* try {
             await this._createTableIfNotExists(table);
             const [rows] = await this._client.db.query(`SELECT * FROM \`${table}\` WHERE ? LIMIT 1`, [query]);
             return rows.length > 0 ? rows[0] : null;
@@ -169,7 +169,7 @@ exports.Database = class AoiMySQL extends EventEmitter {
             console.error(err);
             this.emit('error', err, this._client.db, this._client);
             return null;
-        }
+        } */
     }
 
     async ping() {
@@ -197,16 +197,13 @@ exports.Database = class AoiMySQL extends EventEmitter {
             this._client.db.type = 'aoi.mysql';
             this._client.db.by = 'Made with ♥️ by Tyowk';
             this._client.db.db = {
-                pool: this._client.db.pool,
                 avgPing: this.ping.bind(this),
                 ready: true,
                 readyAt: Date.now(),
-                by: this._client.db.by,
-                type: this._client.db.type
             };
         } catch (err) {
             console.error(err);
             this.emit('error', err, this._client.db, this._client);
         }
     }
-};
+}
