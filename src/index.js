@@ -161,7 +161,7 @@ exports.Database = class AoiMySQL extends EventEmitter {
     }
 
     async findOne(table, query) {
-        /* try {
+        try {
             await this._createTableIfNotExists(table);
             const [rows] = await this._client.db.query(`SELECT * FROM \`${table}\` WHERE ? LIMIT 1`, [query]);
             return rows.length > 0 ? rows[0] : null;
@@ -169,7 +169,7 @@ exports.Database = class AoiMySQL extends EventEmitter {
             console.error(err);
             this.emit('error', err, this._client.db, this._client);
             return null;
-        } */
+        }
     }
 
     async ping() {
