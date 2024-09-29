@@ -28,7 +28,7 @@ const client = new AoiClient({
     prefix: 'client_prefix',
     intents: ['Guilds', 'GuildMessages', 'GuildMembers', 'MessageContent'],
     events: ['onMessage', 'onInteractionCreate'],
-    disableAoiDB: true // This is important, ensure it's set to true. You can't use both at once.
+    disableAoiDB: true // ⚠️ This is important, ensure it's set to true. You can't use both at once.
 });
 
 const db = new Database(client, {
