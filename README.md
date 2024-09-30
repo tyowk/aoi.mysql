@@ -7,7 +7,7 @@
 
 </div>
 <br>
-<p align="center">Aoi.MySQL makes it simple to connect your Aoi.js Discord bot to a MySQL database. With support for mysql2, you get reliable and fast database operations, perfect for any Aoi.js bot project.</p>
+<p align="center">Aoi.MySQL makes it simple to connect your Aoi.js Discord bot to a MySQL database. With support for mysql2, you get reliable and fast database operations, perfect for any Aoi.js bot project</p>
 <br>
 
 <h2 align="center">Installation</h2>
@@ -40,6 +40,7 @@ const db = new Database(client, {
 // rest of your index.js..
 ```
 
+**[❓  Example Usage](https://github.com/tyowk/aoi.mysql/tree/main/test)**
 <br>
 <br>
 <div align="center">
