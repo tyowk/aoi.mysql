@@ -14,3 +14,9 @@ const db = new Database(client, {
     url: process.env.DATABASE,
     tables: ['test']
 });
+
+client.variables({
+    test: 'value'
+}, 'test');
+
+client.loadCommands('./commands/', true);
