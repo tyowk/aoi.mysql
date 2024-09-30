@@ -40,7 +40,7 @@ const db = new Database(client, {
 // rest of your index.js..
 ```
 
-**[❓  Example Usage](https://github.com/tyowk/aoi.mysql/tree/main/test)**
+**[❓  EXAMPLE CODE](https://github.com/tyowk/aoi.mysql/tree/main/test)**
 <br>
 <br>
 <div align="center">
