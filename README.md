@@ -24,8 +24,8 @@ const { AoiClient } = require('aoi.js');
 const { Database } = require('aoi.mysql');
 
 const client = new AoiClient({
-    token: 'client_token',
-    prefix: 'client_prefix',
+    token: 'TOKEN',
+    prefix: 'PREFIX',
     intents: ['Guilds', 'GuildMessages', 'GuildMembers', 'MessageContent'],
     events: ['onMessage', 'onInteractionCreate'],
     disableAoiDB: true // ⚠️ This is important, ensure it's set to true. You can't use both at once.
