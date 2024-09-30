@@ -4,7 +4,8 @@
     "description": "Implementation of MySQL in Aoi.js",
     "main": "src/index.js",
     "scripts": {
-        "start": "node src/index.js"
+        "start": "node src/index.js",
+        "dev": "nodemon test/index.js"
     },
     "keywords": [
         "discord.js",
@@ -17,12 +18,12 @@
     "author": "Tyowk <tyowk@outlook.com>",
     "license": "MIT",
     "dependencies": {
-        "mysql2": "^3.11.0"
+        "mysql2": "^3.11.3"
     },
     "devDependencies": {
         "aoi.js": "^6.8.5",
-        "discord.js": "^14.16.1",
-        "nodemon": "^3.1.4"
+        "discord.js": "^14.16.3",
+        "nodemon": "^3.1.7"
     },
     "repository": {
         "type": "git",
