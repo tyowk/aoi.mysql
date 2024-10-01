@@ -161,7 +161,7 @@ exports.Database = class AoiMySQL extends EventEmitter {
     }
 
     async findOne(table, query) {
-        // this 'find one' function is not used in any aoi.js function.
+        // This 'find one' function is not used in any aoi.js function.
         // Will be added if any aoi.js function uses this database function.
     }
 
