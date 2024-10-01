@@ -10,10 +10,20 @@ const client = new AoiClient({
     disableAoiDB: true
 });
 
+
 const db = new Database(client, {
     url: process.env.DATABASE,
     tables: ['test']
 });
+
+db.once('ready', (client, db) => {
+    console.log('database ready!');
+});
+
+db.on('error', (err, db, client) => {
+    console.log('error: ' + err):
+});
+
 
 client.variables({
     test: 'value'
