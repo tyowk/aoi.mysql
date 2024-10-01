@@ -7,22 +7,22 @@ const client = new AoiClient({
     prefix: process.env.PREFIX,
     intents: ['Guilds', 'GuildMessages', 'GuildMembers', 'MessageContent'],
     events: ['onMessage', 'onInteractionCreate'],
-    disableAoiDB: true
+    disableAoiDB: true // ⚠️ IMPORTANT
 });
 
 
 const db = new Database(client, {
     url: process.env.DATABASE,
     tables: ['test']
-});
+}); // DATABASE SETTINGS
 
 db.once('ready', (client, db) => {
     console.log('database ready!');
-});
+}); // READY EVENT
 
 db.on('error', (err, db, client) => {
     console.log('error: ' + err):
-});
+}); // ERROR EVENT
 
 
 client.variables({
