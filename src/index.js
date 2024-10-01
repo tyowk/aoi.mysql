@@ -161,15 +161,8 @@ exports.Database = class AoiMySQL extends EventEmitter {
     }
 
     async findOne(table, query) {
-        try {
-            await this._createTableIfNotExists(table);
-            const [rows] = await this._client.db.query(`SELECT * FROM \`${table}\` WHERE ? LIMIT 1`, [query]);
-            return rows.length > 0 ? rows[0] : null;
-        } catch (err) {
-            console.error(err);
-            this.emit('error', err, this._client.db, this._client);
-            return null;
-        }
+        // this 'find one' function is not used in any aoi.js function.
+        // Will be added if any aoi.js function uses this database function.
     }
 
     async ping() {
