@@ -40,7 +40,7 @@ new Database(client, {
 <br>
 <br>
 <h2 align="center">Aoi.DB</h2>
-<p align="center">Want to keep your aoi.db database? or transfer your aoi.db database?<br><strong>NOT POSSIBLE YET!</strong></p>
+<p align="center">Want to keep your aoi.db database? or transfer your aoi.db database?<br><strong>✋ NOT POSSIBLE YET!</strong></p>
 <br>
 <br>
 <br>
