@@ -28,7 +28,7 @@ const client = new AoiClient({
     disableAoiDB: true // ⚠️ This is important, ensure it's set to true. You can't use both at once.
 });
 
-const db = new Database(client, {
+new Database(client, {
     url: 'mysql://...', // your MySQL server uri
     tables: ['main']
 });
