@@ -1,21 +1,18 @@
 <h1 align="center">Aoi.MySQL</h1>
 <br>
 <div align="center">
-    
+
 [![NPM downloads](https://img.shields.io/npm/dt/aoi.mysql.svg?color=3182b0&style=for-the-badge)](https://npmjs.org/package/aoi.mysql)&nbsp;&nbsp;
 [![NPM version](http://img.shields.io/npm/v/aoi.mysql.svg?color=3182b0&style=for-the-badge)](http://npmjs.org/package/aoi.mysql)&nbsp;&nbsp;
-
 </div>
 <br>
 <p align="center">Aoi.MySQL makes it simple to connect your Aoi.js Discord bot to a MySQL database. With support for mysql2, you get reliable and fast database operations, perfect for any Aoi.js bot project</p>
 <br>
-
 <h2 align="center">Installation</h2>
 
 ```bash
 npm install aoi.mysql
 ```
-
 <br>
 <h2 align="center">Setup</h2>
 
@@ -39,8 +36,12 @@ const db = new Database(client, {
 
 // rest of your index.js..
 ```
-
 **[❓  EXAMPLE CODE](https://github.com/tyowk/aoi.mysql/tree/main/test)**
+<br>
+<br>
+<h2 align="center">Aoi.DB</h2>
+<p align="center">Want to keep your aoi.db database? or transfer your aoi.db database?<br><strong>NOT POSSIBLE YET!</strong></p>
+<br>
 <br>
 <br>
 <div align="center">
@@ -50,4 +51,9 @@ const db = new Database(client, {
     <a href="https://aoi.js.org/invite">
 <img src="https://img.shields.io/discord/773352845738115102?logo=discord&logoColor=white&color=3182b0&style=for-the-badge">
     </a>
+    <br>
+    <br>
+    <br>
+    Made with ♥️ by <a href="https://github.com/tyowk">Tyowk</a><br>
+    Inspired by <a href="https://github.com/faf4a">Fafa</a>
 </div>
