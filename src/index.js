@@ -7,7 +7,7 @@ exports.Database = class AoiMySQL extends EventEmitter {
         super();
         this._client = client;
         this._options = options;
-        this._variable = this._client?.variableManager?.cache;
+        this._variable = this._client?.variableManager;
         this._connect();
     }
 
