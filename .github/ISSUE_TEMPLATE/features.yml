@@ -1,0 +1,11 @@
+name: Feature Request
+description: Request a feature or suggest us!
+body:
+  - type: textarea
+    id: paragraph
+    attributes:
+      label: So?
+      description: Please describe what you're requesting for.
+      placeholder: So...
+    validations:
+      required: true
