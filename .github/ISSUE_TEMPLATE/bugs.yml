@@ -1,6 +1,9 @@
 name: Bug Report
 description: Report us the issue.
 title: "Bug: "
+labels: "bug"
+assignees:
+  - bug
 body:
   - type: textarea
     id: code
