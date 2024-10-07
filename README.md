@@ -37,7 +37,7 @@ new Database(client, {
 
 client.variables({
     key: 'value' // ⚠️ THIS IS IMPORTANT, you need to place this client variables under database settings.
-});
+}, 'main');
 
 
 
