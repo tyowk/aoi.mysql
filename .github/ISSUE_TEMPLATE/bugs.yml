@@ -8,7 +8,7 @@ body:
     attributes:
       label: BUGS
       render: markdown
-      placeholder: There is bugs at...
+      placeholder: There is a bugs at...
     validations:
       required: true
 
