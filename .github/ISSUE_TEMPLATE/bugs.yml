@@ -2,18 +2,14 @@ name: Bug Report
 description: Report us the issue.
 title: "Bug: "
 labels: "bug"
-assignees:
-  - bug
 body:
   - type: textarea
     id: code
     attributes:
       label: BUGS
-      render: js 
-      description: Please type usage of your code 
+      render: markdown
     validations:
       required: true
-   
 
   - type: dropdown
     id: version
