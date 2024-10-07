@@ -1,11 +1,14 @@
 name: Feature Request
 description: Request a feature or suggest us!
+labels: "enhancement"
+assignees:
+  - enhancement
 body:
   - type: textarea
     id: paragraph
     attributes:
       label: So?
       description: Please describe what you're requesting for.
-      placeholder: So...
+      placeholder: So i want...
     validations:
       required: true
