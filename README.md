@@ -25,16 +25,23 @@ const client = new AoiClient({
     prefix: 'PREFIX',
     intents: ['Guilds', 'GuildMessages', 'GuildMembers', 'MessageContent'],
     events: ['onMessage', 'onInteractionCreate'],
-    disableAoiDB: true // ⚠️ This is important, ensure it's set to true. You can't use both at once.
+    disableAoiDB: true // ⚠️ THIS IS IMPORTANT, ensure it's set to true. You can't use both at once.
 });
 
+
 new Database(client, {
-    url: 'mysql://...', // your MySQL server uri
+    url: 'mysql://...', // YOUR MYSQL SERVER URI
     tables: ['main']
 });
 
 
-// rest of your index.js..
+client.variables({
+    key: 'value' // ⚠️ THIS IS IMPORTANT, you need to place this client variables under database settings.
+});
+
+
+
+• • •
 ```
 **[❓  EXAMPLE CODE](https://github.com/tyowk/aoi.mysql/tree/main/test)**
 <br>
