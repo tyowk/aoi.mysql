@@ -27,6 +27,6 @@ db.on('error', (err, db, client) => {
 
 client.variables({
     test: 'value'
-}, 'test');
+}, 'test'); // ⚠️ IMPORTANT
 
 client.loadCommands('./commands/', true);
