@@ -18,7 +18,8 @@ body:
       label: Version of Aoi.MySQL
       description: What version of aoi.mysql are you using?
       options:
-        - v1.0.0
+        - v1.0.0 (deprecated)
+        - v1.0.1 (latest)
     validations:
       required: false
       
