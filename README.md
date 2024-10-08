@@ -28,16 +28,14 @@ const client = new AoiClient({
     disableAoiDB: true // ⚠️ THIS IS IMPORTANT, ensure it's set to true. You can't use both at once.
 });
 
-
 new Database(client, {
     url: 'mysql://...', // YOUR MYSQL SERVER URI
     tables: ['main']
 });
 
-
 client.variables({
     key: 'value' // ⚠️ THIS IS IMPORTANT, you need to place this client variables under database settings.
-}, 'main');
+});
 
 
 
