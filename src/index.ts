@@ -1,5 +1,5 @@
 import { createPool } from 'mysql2/promise';
-import { AoiError } from 'aoi.js/src/classes/AoiError';
+import { AoiError } from 'aoi.js';
 import EventEmitter from 'events';
 
 export class Database extends EventEmitter {
