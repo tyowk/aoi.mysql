@@ -1,12 +1,12 @@
 import { createPool } from 'mysql2/promise';
-import { AoiError } from 'aoi.js';
+import chalk from 'chalk';
 import EventEmitter from 'events';
 
 export class Database extends EventEmitter {
     _client: any;
     _options: any;
     _variable: any;
-    
+
     constructor(client: any, options: any) {
         super();
         this._client = client;
@@ -26,11 +26,11 @@ export class Database extends EventEmitter {
             for (const table of this._client.db.tables) { await this._createTableIfNotExists(table); }
             this._assignMethods();
             this.emit('ready', this._client, this._client?.db);
-            AoiError.createConsoleMessage([
+            this._logger([
                 { text: `Latency: ${await this.ping()}ms`, textColor: 'white' },
                 { text: `Successfully connected to MySQL`, textColor: 'white' },
                 { text: `Installed on v${require('../package.json').version || '0.0.0'}`, textColor: 'green' }
-            ], 'white', { text: ' aoi.mysql ', textColor: 'cyan' });
+            ], { text: ' aoi.mysql ', textColor: 'cyan' });
 
         } catch (err) {
             this._handleError(err, 2);
@@ -178,11 +178,59 @@ export class Database extends EventEmitter {
             this.emit('error', err, this._client.db, this._client);
         } else if (type == 2) {
             this.emit('error', err, this._client.db, this._client);
-            AoiError.createConsoleMessage([
+            this._logger([
                 { text: `Failed to connect to MySQL`, textColor: 'red' },
                 { text: err.message, textColor: 'white' }
-            ], 'white', { text: ' aoi.mysql ', textColor: 'cyan' });
+            ], { text: ' aoi.mysql ', textColor: 'cyan' });
             process.exit(1);
         }
+    }
+
+    private _logger(messages: any, title: any) {
+        if (!Array.isArray(messages)) {
+            messages = [messages];
+        }
+        const strip = (str: any) => str.replace(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, "");
+        title = title && title.text ? title : { text: "", textColor: "cyan" };;
+        const totalwidth = process.stdout?.columns || 80;
+        const bordercolor = chalk.white;
+        const maxwidth = Math.max(...messages.map((msg: any) => strip(typeof msg === "string" ? msg : msg.text).length), strip(title.text).length);
+        const msgwidth = Math.min(maxwidth, totalwidth - 4);
+        const bordertop = bordercolor(`╭${"─".repeat(msgwidth + 2)}╮`);
+        const wrapText = (text: any, width: any) => {
+            const words = text.split(" ");
+            let lines = [];
+            let current = words[0];
+
+            for (let i = 1; i < words.length; i++) {
+                if (strip(current).length + strip(words[i]).length + 1 <= width) {
+                    current += " " + words[i];
+                } else {
+                    lines.push(current);
+                    current = words[i];
+                }
+            }
+            lines.push(current);
+            return lines;
+        };
+
+        const newmessage = (msg: any) => {
+            const text = typeof msg === "string" ? msg : msg.text;
+            const textcolor = msg.textColor ? (chalk as any)[msg.textColor] : chalk.white;
+            const wrapped = wrapText(text, msgwidth);
+            const msgs = wrapped.map((line) => {
+                const padding = msgwidth - strip(line).length;
+                const padded = msg.centered !== false ? " ".repeat(Math.abs(Math.floor(padding / 2))) + line + " ".repeat(Math.abs(Math.ceil(padding / 2))) : line + " ".repeat(Math.abs(padding));
+                return `│ ${textcolor(padded)} │`;
+            });
+            return msgs;
+        };;
+
+        const titlemsg = title.text ? newmessage(title) : [];
+        const msgs = messages.flatMap(newmessage);
+        console.log(bordertop);
+        titlemsg.forEach((line) => console.log(line));
+        msgs.forEach((line: any) => console.log(line));
+        console.log(bordercolor(`╰${"─".repeat(Math.abs(msgwidth) + 2)}╯`));
     }
 }
