@@ -1,5 +1,5 @@
 import { createPool } from 'mysql2/promise';
-import { createConsoleMessage } from 'aoi.js/src/classes/AoiError';
+import { AoiError } from 'aoi.js/src/classes/AoiError';
 import EventEmitter from 'events';
 
 export class Database extends EventEmitter {
@@ -26,7 +26,7 @@ export class Database extends EventEmitter {
             for (const table of this._client.db.tables) { await this._createTableIfNotExists(table); }
             this._assignMethods();
             this.emit('ready', this._client, this._client?.db);
-            createConsoleMessage([
+            AoiError.createConsoleMessage([
                 { text: `Latency: ${await this.ping()}ms`, textColor: 'white' },
                 { text: `Successfully connected to MySQL`, textColor: 'white' },
                 { text: `Installed on v${require('../package.json').version || '0.0.0'}`, textColor: 'green' }
@@ -178,7 +178,7 @@ export class Database extends EventEmitter {
             this.emit('error', err, this._client.db, this._client);
         } else if (type == 2) {
             this.emit('error', err, this._client.db, this._client);
-            createConsoleMessage([
+            AoiError.createConsoleMessage([
                 { text: `Failed to connect to MySQL`, textColor: 'red' },
                 { text: err.message, textColor: 'white' }
             ], 'white', { text: ' aoi.mysql ', textColor: 'cyan' });
