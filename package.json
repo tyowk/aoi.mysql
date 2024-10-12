@@ -2,7 +2,7 @@
     "name": "aoi.mysql",
     "version": "1.0.2",
     "description": "Implementation of MySQL in Aoi.js",
-    "main": "src/index.js",
+    "main": "dist/index.js",
     "scripts": {
         "start": "node dist/index.js",
         "dev": "nodemon test/index.js",
