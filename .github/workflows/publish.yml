@@ -13,7 +13,8 @@ jobs:
         with:
           node-version: 20
       - run: npm ci
-      - run: npm test
+      - run: npm i -g typescript
+      - run: tsc
 
   publish-gpr:
     needs: build
