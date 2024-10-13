@@ -3,10 +3,11 @@
     "version": "2.0.1",
     "description": "Implementation of MySQL in Aoi.js",
     "main": "dist/index.js",
+    "types": "dist/index.d.ts",
     "scripts": {
-        "start": "node dist/index.js",
-        "dev": "nodemon test/index.js",
-        "build": "tsc"
+        "start": "npm run build && npm run dev",
+        "dev": "node test/index.js",
+        "build": "tsc && echo Building Done!"
     },
     "keywords": [
         "discord.js",
@@ -22,14 +23,11 @@
         "mysql2": "^3.11.3"
     },
     "devDependencies": {
-        "aoi.js": "^6.8.5",
-        "discord.js": "^14.16.3",
-        "dotenv": "^16.4.5",
-        "nodemon": "^3.1.7"
+        "aoi.js": "^6.8.5"
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/tyowk/aoi.mysql.git"
+        "url": "git+https://github.com/tyowk/aoi.mysql.git"
     },
     "bugs": {
         "url": "https://github.com/tyowk/aoi.mysql/issues"
