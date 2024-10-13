@@ -42,7 +42,6 @@ client.variables({
 
 • • •
 ```
-**[❓  EXAMPLE CODE](https://github.com/tyowk/aoi.mysql/tree/main/test)**
 <br>
 <br>
 <h2 align="center">Aoi.DB</h2>
