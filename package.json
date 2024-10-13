@@ -5,9 +5,8 @@
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "scripts": {
-        "start": "npm run build && npm run dev",
-        "dev": "node test/index.js",
-        "build": "tsc && echo Building Done!"
+        "start": "npm run build",
+        "build": "tsc -p tsconfig.json && echo Building Done!"
     },
     "keywords": [
         "discord.js",
