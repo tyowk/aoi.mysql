@@ -1,6 +1,6 @@
 {
     "name": "aoi.mysql",
-    "version": "2.0.1",
+    "version": "2.0.2",
     "description": "Implementation of MySQL in Aoi.js",
     "main": "dist/index.js",
     "types": "dist/types/index.d.ts",
@@ -14,7 +14,8 @@
         "aoi.db",
         "mysql",
         "mysql2",
-        "database"
+        "database",
+        "bdfd"
     ],
     "author": "Tyowk <tyowk@outlook.com>",
     "license": "MIT",
@@ -35,6 +36,7 @@
     "files": [
         "dist",
         "README.md",
-        "LICENSE"
+        "LICENSE",
+        "package.json"
     ]
 }
