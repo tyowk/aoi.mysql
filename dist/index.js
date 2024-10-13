@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Database = void 0;
 const promise_1 = require("mysql2/promise");
-const logger_1 = require("./structures/logger");
+const logger_1 = require("./logger");
 const events_1 = __importDefault(require("events"));
 class Database extends events_1.default {
     _client;
