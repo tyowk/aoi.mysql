@@ -1,6 +1,6 @@
 {
     "name": "aoi.mysql",
-    "version": "2.0.2",
+    "version": "2.0.5",
     "description": "Implementation of MySQL in Aoi.js",
     "main": "dist/index.js",
     "types": "dist/types/index.d.ts",
