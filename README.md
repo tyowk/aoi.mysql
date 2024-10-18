@@ -1,5 +1,5 @@
 <div align="center">
-<img src="https://aoimysql.vercel.app/_astro/icon.wDleH0Vf_Z1xPyP6.webp" width="150">
+<img src="https://aoimysql.js.org/_astro/icon.wDleH0Vf_Z1xPyP6.webp" width="150">
 <h1 align="center">Aoi.MySQL</h1>
 <br>
 
