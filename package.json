@@ -46,7 +46,7 @@
     "bugs": {
         "url": "https://github.com/tyowk/aoi.mysql/issues"
     },
-    "homepage": "https://aoi.js.org",
+    "homepage": "https://aoimysql.js.org",
     "files": [
         "dist",
         "README.md",
