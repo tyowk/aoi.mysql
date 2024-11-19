@@ -1,0 +1,69 @@
+{
+    "name": "aoi.mysql",
+    "version": "3.6.0",
+    "description": "Implementation of MySQL in Aoi.js",
+    "type": "commonjs",
+    "main": "dist/CJS/index.js",
+    "module": "dist/ESM/index.js",
+    "types": "dist/CJS/types/index.d.ts",
+    "export": {
+        "import": {
+            "default": "./dist/ESM/index.js",
+            "types": "./dist/ESM/types/index.d.ts"
+        },
+        "require": {
+            "default": "./dist/CJS/index.js",
+            "types": "./dist/CJS/types/index.d.ts"
+        }
+    },
+    "scripts": {
+        "start": "npm run build",
+        "dev": "node test/dev.js",
+        "build": "npm run tsc:cjs && npm run tsc:esm && npm run rm:fil && npm run rm:dir",
+        "rm:fil": "rm ./dist/CJS/types/functions/* && rm ./dist/ESM/types/functions/*",
+        "rm:dir": "rmdir ./dist/CJS/types/functions && rmdir ./dist/ESM/types/functions",
+        "tsc:esm": "tsc -p tscoesm.json && echo Building ESM Done!",
+        "tsc:cjs": "tsc -p tsconfig.json && echo Building CJS Done!"
+    },
+    "keywords": [
+        "discord.js",
+        "aoi.js",
+        "aoi.db",
+        "mysql",
+        "mysql2",
+        "database",
+        "bdfd"
+    ],
+    "author": "Tyowk <tyowk@outlook.com>",
+    "license": "MIT",
+    "dependencies": {
+        "mysql2": "^3.11.4"
+    },
+    "devDependencies": {
+        "aoi.js": "^6.9.0"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/tyowk/aoi.mysql.git"
+    },
+    "funding": [
+        {
+            "type": "individual",
+            "url": "https://trakteer.id/tyowk"
+        },
+        {
+            "type": "patreon",
+            "url": "https://www.patreon.com/tyowk_official"
+        }
+    ],
+    "bugs": {
+        "url": "https://github.com/tyowk/aoi.mysql/issues"
+    },
+    "homepage": "https://github.com/tyowk/aoi.mysql",
+    "files": [
+        "dist",
+        "README.md",
+        "LICENSE",
+        "package.json"
+    ]
+}

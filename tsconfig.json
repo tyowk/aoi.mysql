@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+        "module": "CommonJS",
+        "target": "ESNEXT",
+        "outDir": "dist/CJS",
+        "strict": true,
+        "rootDir": "src/DATABASE",
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": true,
+        "skipLibCheck": true,
+        "skipDefaultLibCheck": true,
+        "resolveJsonModule": true,
+        "moduleResolution": "node",
+        "declaration": true,
+        "declarationDir": "dist/CJS/types"
+    }
+}
