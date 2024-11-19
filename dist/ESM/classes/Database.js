@@ -155,12 +155,11 @@ export class Database extends EventEmitter {
                     \`key\` VARCHAR(255) NOT NULL PRIMARY KEY,
                     \`value\` LONGTEXT NOT NULL
                 );`);
+            this._connection?.release();
+            return;
         }
         catch (err) {
             this._handleError(err);
-        }
-        finally {
-            this._connection?.release();
         }
     }
     /**
@@ -179,20 +178,19 @@ export class Database extends EventEmitter {
             const queryKey = `${key}_${id}`;
             if (aoivars.includes(key)) {
                 const [rows] = await this._db.pool?.query(`SELECT value FROM \`${table}\` WHERE \`key\` = ?`, [queryKey]);
+                this._connection?.release();
                 return rows.length > 0 ? rows[0] : null;
             }
             if (!this._variable.has(key, table))
                 return null;
             const defaultValue = this._variable.get(key, table)?.default;
             const [rows] = await this._db.pool?.query(`SELECT value FROM \`${table}\` WHERE \`key\` = ?`, [queryKey]);
+            this._connection?.release();
             return rows.length > 0 ? rows[0] : (defaultValue ? { value: defaultValue } : null);
         }
         catch (err) {
             this._handleError(err);
             return null;
-        }
-        finally {
-            this._connection?.release();
         }
     }
     /**
@@ -210,12 +208,11 @@ export class Database extends EventEmitter {
             if (!await this.isTableExists(table))
                 this.prepare(table);
             await this._db.pool?.query(`INSERT INTO \`${table}\` (\`key\`, \`value\`) VALUES (?, ?) ON DUPLICATE KEY UPDATE \`value\` = ?`, [`${key}_${id}`, value, value]);
+            this._connection?.release();
+            return;
         }
         catch (err) {
             this._handleError(err);
-        }
-        finally {
-            this._connection?.release();
         }
     }
     /**
@@ -230,15 +227,16 @@ export class Database extends EventEmitter {
         try {
             if (!await this.isTableExists(table))
                 this.prepare(table);
-            if (variable)
-                return await this._db.pool?.query(`DELETE FROM \`${table}\` WHERE \`key\` = ?`, [variable]);
+            if (variable) {
+                await this._db.pool?.query(`DELETE FROM \`${table}\` WHERE \`key\` = ?`, [variable]);
+                return this._connection?.release();
+            }
             await this._db.pool?.query(`DROP TABLE IF EXISTS \`${table}\``);
+            this._connection?.release();
+            return;
         }
         catch (err) {
             this._handleError(err);
-        }
-        finally {
-            this._connection?.release();
         }
     }
     /**
@@ -255,16 +253,17 @@ export class Database extends EventEmitter {
                 this.prepare(table);
             const [rows] = await this._db.pool?.query(`SELECT * FROM \`${table}\``);
             const keysToDelete = rows.filter(query).map((row) => row.key);
-            if (keysToDelete.length === 0)
+            if (keysToDelete.length === 0) {
+                this._connection?.release();
                 return;
+            }
             const placeholders = keysToDelete.map(() => '?').join(',');
             await this._db.pool?.query(`DELETE FROM \`${table}\` WHERE \`key\` IN (${placeholders})`, keysToDelete);
+            this._connection?.release();
+            return;
         }
         catch (err) {
             this._handleError(err);
-        }
-        finally {
-            this._connection?.release();
         }
     }
     /**
@@ -281,12 +280,11 @@ export class Database extends EventEmitter {
             if (!await this.isTableExists(table))
                 this.prepare(table);
             await this._db.pool?.query(`DELETE FROM \`${table}\` WHERE \`key\` = ?`, [`${key}_${id}`]);
+            this._connection?.release();
+            return;
         }
         catch (err) {
             this._handleError(err);
-        }
-        finally {
-            this._connection?.release();
         }
     }
     /**
@@ -307,14 +305,12 @@ export class Database extends EventEmitter {
                 rows = rows.filter(query);
             if (limit)
                 rows = rows.slice(0, limit);
+            this._connection?.release();
             return rows.map((row) => ({ ...row, data: { value: row.value } }));
         }
         catch (err) {
             this._handleError(err);
             return null;
-        }
-        finally {
-            this._connection?.release();
         }
     }
     /**
@@ -333,14 +329,12 @@ export class Database extends EventEmitter {
                 this.prepare(table);
             const [rows] = await this._db.pool?.query(`SELECT * FROM \`${table}\` ORDER BY \`value\` ${sort.toUpperCase()}`);
             const results = rows.filter(filter).map((row) => ({ key: row.key, value: row.value }));
+            this._connection?.release();
             return results.slice(0, list);
         }
         catch (err) {
             this._handleError(err);
             return null;
-        }
-        finally {
-            this._connection?.release();
         }
     }
     /**
@@ -352,14 +346,12 @@ export class Database extends EventEmitter {
     async ping(start = Date.now()) {
         try {
             await this._db.pool?.query('SELECT 1');
+            this._connection?.release();
             return Date.now() - start;
         }
         catch (err) {
             this._handleError(err);
             return -1;
-        }
-        finally {
-            this._connection?.release();
         }
     }
     /**
