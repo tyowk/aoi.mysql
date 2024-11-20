@@ -14,7 +14,7 @@
 ```bash
 npm install aoi.mysql
 ```
-<h3>📖  GitHub Version</h3>
+<h2>📖  GitHub Install</h2>
 
 ```bash
 npm i github:tyowk/aoi.mysql#main
