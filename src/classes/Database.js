@@ -91,23 +91,11 @@ class Database extends events_1.default {
                 this.prepare(table);
             }
             this.emit('connect', this._options.keepAoiDB ? this._client.mysql : this._client.db, this._client);
-            const res = await (await fetch('https://registry.npmjs.org/aoi.mysql')).json();
-            const logger = [
+            this._logger([
                 { text: `Latency: ${await this.ping()}ms`, textColor: 'green' },
                 { text: `Successfully connected to MySQL database`, textColor: 'blue' },
                 { text: `Installed on v${package_json_1.default.version || '0.0.0'}`, textColor: 'blue' }
-            ];
-            if (!res.versions[package_json_1.default.version] || res['dist-tags'].dev === package_json_1.default.version || package_json_1.default.version.includes('dev')) {
-                logger.push({ text: ' ', textColor: 'white' });
-                logger.push({ text: 'This is a development version.', textColor: 'red' });
-                logger.push({ text: 'Some features may be incomplete or unstable.', textColor: 'red' });
-            }
-            else if (package_json_1.default.version !== res['dist-tags'].latest) {
-                logger.push({ text: ' ', textColor: 'white' });
-                logger.push({ text: 'Outdated version detected!', textColor: 'red' });
-                logger.push({ text: 'Update with "npm i aoi.mysql@latest"', textColor: 'red' });
-            }
-            this._logger(logger, { text: ' Aoi.MySQL ', textColor: 'cyan' });
+            ], { text: ' Aoi.MySQL ', textColor: 'cyan' });
         }
         catch (err) {
             this._handleError(err, 'failed');
