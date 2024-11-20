@@ -25,11 +25,6 @@ npm i github:tyowk/aoi.mysql#main
 <h2 align="center">🛠️  Setup</h2>
 
 ```javascript
-/*
-*  import { AoiClient } from 'aoi.js';
-*  import { Database } from 'aoi.mysql';  // ES Module import
-*/
-
 const { AoiClient } = require('aoi.js');
 const { Database } = require('aoi.mysql');  // Import the Aoi.MySQL package
 
