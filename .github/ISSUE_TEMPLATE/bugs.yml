@@ -19,10 +19,12 @@ body:
       description: What version of aoi.mysql are you using?
       options:
         - v1.0.0 [deprecated]
-        - v1.0.1
-        - v2.0.0
-        - v2.0.5
-        - v3.0.0 [latest]
+        - v1.0.1 [deprecated]
+        - v2.0.0 [deprecated]
+        - v2.0.5 [deprecated]
+        - v3.0.0 [deprecated]
+        - v3.5.0 [deprecated]
+        - v3.6.0
     validations:
       required: false
       
