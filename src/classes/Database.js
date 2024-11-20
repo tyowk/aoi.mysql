@@ -62,7 +62,7 @@ class Database extends events_1.default {
                 { text: `If you only want to use MySQL, you need to add "disableAoiDB" in the client options and set it to "true".`, textColor: 'red' },
                 { text: ` `, textColor: 'white' },
                 { text: `But if you want to keep using your aoi.db database, you need to add "keepAoiDB" in the database options and set it to "true".`, textColor: 'red' }
-            ], { text: ' Aoi.MySQL ', textColor: 'cyan' });
+            ], { text: ' aoijs.mysql ', textColor: 'cyan' });
             process.exit(1);
         }
         this._connect();
@@ -93,7 +93,7 @@ class Database extends events_1.default {
             this._logger([
                 { text: `Latency: ${await this.ping()}ms`, textColor: 'green' },
                 { text: `Successfully connected to MySQL database`, textColor: 'blue' },
-            ], { text: ' Aoi.MySQL ', textColor: 'cyan' });
+            ], { text: ' aoijs.mysql ', textColor: 'cyan' });
         }
         catch (err) {
             this._handleError(err, 'failed');
@@ -152,7 +152,7 @@ class Database extends events_1.default {
                     \`key\` VARCHAR(255) NOT NULL PRIMARY KEY,
                     \`value\` LONGTEXT NOT NULL
                 );`);
-            this._connection?.release();
+            await this._connection?.release();
             return;
         }
         catch (err) {
@@ -177,7 +177,7 @@ class Database extends events_1.default {
                 console.log(`[${chalk_1.default.blue('DEBUG')}] rechieving get(${table}, ${queryKey})`);
             if (aoivars.includes(key)) {
                 const [rows] = await this._db.pool?.query(`SELECT value FROM \`${table}\` WHERE \`key\` = ?`, [queryKey]);
-                this._connection?.release();
+                await this._connection?.release();
                 const result = rows.length > 0 ? rows[0] : null;
                 if (this._options.debug)
                     console.log(`[${chalk_1.default.blue('DEBUG')}] returning get(${table}, ${queryKey}) => `, result);
@@ -187,7 +187,7 @@ class Database extends events_1.default {
                 return null;
             const defaultValue = this._variable.get(key, table)?.default;
             const [rows] = await this._db.pool?.query(`SELECT value FROM \`${table}\` WHERE \`key\` = ?`, [queryKey]);
-            this._connection?.release();
+            await this._connection?.release();
             const result = rows.length > 0 ? rows[0] : (defaultValue ? { value: defaultValue } : null);
             if (this._options.debug)
                 console.log(`[${chalk_1.default.blue('DEBUG')}] returning get(${table}, ${queryKey}) => `, result);
@@ -217,7 +217,7 @@ class Database extends events_1.default {
             await this._db.pool?.query(`INSERT INTO \`${table}\` (\`key\`, \`value\`) VALUES (?, ?) ON DUPLICATE KEY UPDATE \`value\` = ?`, [`${key}_${id}`, value, value]);
             if (this._options.debug)
                 console.log(`[${chalk_1.default.blue('DEBUG')}] returning set(${table}, ${key}_${id}, ${value}) => value updated`);
-            this._connection?.release();
+            await this._connection?.release();
             return;
         }
         catch (err) {
@@ -242,13 +242,13 @@ class Database extends events_1.default {
                 await this._db.pool?.query(`DELETE FROM \`${table}\` WHERE \`key\` = ?`, [variable]);
                 if (this._options.debug)
                     console.log(`[${chalk_1.default.blue('DEBUG')}] returning drop(${table}, ${variable}) => variable deleted`);
-                this._connection?.release();
+                await this._connection?.release();
                 return;
             }
             if (this._options.debug)
                 console.log(`[${chalk_1.default.blue('DEBUG')}] rechieving drop(${table})`);
             await this._db.pool?.query(`DROP TABLE IF EXISTS \`${table}\``);
-            this._connection?.release();
+            await this._connection?.release();
             if (this._options.debug)
                 console.log(`[${chalk_1.default.blue('DEBUG')}] returning drop(${table}) => table deleted`);
             return;
@@ -274,12 +274,12 @@ class Database extends events_1.default {
             const [rows] = await this._db.pool?.query(`SELECT * FROM \`${table}\``);
             const keysToDelete = rows.filter(query).map((row) => row.key);
             if (keysToDelete.length === 0) {
-                this._connection?.release();
+                await this._connection?.release();
                 return;
             }
             const placeholders = keysToDelete.map(() => '?').join(',');
             await this._db.pool?.query(`DELETE FROM \`${table}\` WHERE \`key\` IN (${placeholders})`, keysToDelete);
-            this._connection?.release();
+            await this._connection?.release();
             if (this._options.debug)
                 console.log(`[${chalk_1.default.blue('DEBUG')}] returning deleteMany(${table}, ${query}) => deleted`);
             return;
@@ -304,7 +304,7 @@ class Database extends events_1.default {
             if (this._options.debug)
                 console.log(`[${chalk_1.default.blue('DEBUG')}] rechieving delete(${table}, ${key}_${id})`);
             await this._db.pool?.query(`DELETE FROM \`${table}\` WHERE \`key\` = ?`, [`${key}_${id}`]);
-            this._connection?.release();
+            await this._connection?.release();
             if (this._options.debug)
                 console.log(`[${chalk_1.default.blue('DEBUG')}] returning delete(${table}, ${key}_${id}) => deleted`);
             return;
@@ -333,7 +333,7 @@ class Database extends events_1.default {
                 rows = rows.filter(query);
             if (limit)
                 rows = rows.slice(0, limit);
-            this._connection?.release();
+            await this._connection?.release();
             const result = rows.map((row) => ({ ...row, data: { value: row.value } }));
             if (this._options.debug)
                 console.log(`[${chalk_1.default.blue('DEBUG')}] returning findMany(${table}, ${query}, ${limit}) => `, result);
@@ -362,7 +362,7 @@ class Database extends events_1.default {
                 console.log(`[${chalk_1.default.blue('DEBUG')}] rechieving all(${table}, ${filter}, ${list}, ${sort})`);
             const [rows] = await this._db.pool?.query(`SELECT * FROM \`${table}\` ORDER BY \`value\` ${sort.toUpperCase()}`);
             const results = rows.filter(filter).map((row) => ({ key: row.key, value: row.value }));
-            this._connection?.release();
+            await this._connection?.release();
             const result = results.slice(0, list);
             if (this._options.debug)
                 console.log(`[${chalk_1.default.blue('DEBUG')}] returning all(${table}, ${filter}, ${list}, ${sort}) => `, result);
@@ -384,7 +384,7 @@ class Database extends events_1.default {
             if (this._options.debug)
                 console.log(`[${chalk_1.default.blue('DEBUG')}] rechieving ping()`);
             await this._db.pool?.query('SELECT 1');
-            this._connection?.release();
+            await this._connection?.release();
             if (this._options.debug)
                 console.log(`[${chalk_1.default.blue('DEBUG')}] returning ping() => ${Date.now() - start}ms`);
             return Date.now() - start;
@@ -408,7 +408,7 @@ class Database extends events_1.default {
             this._logger([
                 { text: `Failed to connect to MySQL database`, textColor: 'red' },
                 { text: err.message, textColor: 'white' }
-            ], { text: ' Aoi.MySQL ', textColor: 'cyan' });
+            ], { text: ' aoijs.mysql ', textColor: 'cyan' });
             return process.exit(1);
         }
         throw new Error(err);
