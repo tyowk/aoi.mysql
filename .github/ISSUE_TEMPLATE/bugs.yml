@@ -11,17 +11,6 @@ body:
       placeholder: There is a bugs at...
     validations:
       required: true
-
-  - type: dropdown
-    id: version
-    attributes:
-      label: Version of Aoi.MySQL
-      description: What version of aoi.mysql are you using?
-      options:
-        - v1.0.0
-    validations:
-      required: false
-      
   - type: textarea
     id: logs
     attributes:
