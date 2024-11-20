@@ -8,7 +8,6 @@ const promise_1 = require("mysql2/promise");
 const Logger_1 = require("./Logger");
 const Functions_1 = require("./Functions");
 const events_1 = __importDefault(require("events"));
-const package_json_1 = __importDefault(require("../../package.json"));
 const chalk_1 = __importDefault(require("chalk"));
 /**
  * @class Database
@@ -94,7 +93,6 @@ class Database extends events_1.default {
             this._logger([
                 { text: `Latency: ${await this.ping()}ms`, textColor: 'green' },
                 { text: `Successfully connected to MySQL database`, textColor: 'blue' },
-                { text: `Installed on v${package_json_1.default.version || '0.0.0'}`, textColor: 'blue' }
             ], { text: ' Aoi.MySQL ', textColor: 'cyan' });
         }
         catch (err) {
