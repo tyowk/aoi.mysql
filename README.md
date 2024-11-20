@@ -1,13 +1,13 @@
 <div align="center">
   <img src="https://raw.githubusercontent.com/tyowk/aoi.mysql/refs/heads/main/.github/uwu.png" width="150">
-  <h1>Aoi.MySQL</h1>
+  <h1>aoijs.mysql</h1>
   <br>
 
   [![NPM downloads](https://img.shields.io/npm/dt/aoi.mysql.svg?color=3182b0&style=for-the-badge)](https://npmjs.com/package/aoi.mysql)&nbsp;&nbsp;
   [![NPM version](http://img.shields.io/npm/v/aoi.mysql.svg?color=3182b0&style=for-the-badge)](http://npmjs.com/package/aoi.mysql)&nbsp;&nbsp;
   ![NPM License](https://img.shields.io/npm/l/aoi.mysql?color=3182b0&style=for-the-badge)
   <br>
-  <p>Aoi.MySQL makes it effortless to connect your Aoi.js Discord bot to a MySQL database. Leveraging the power of mysql2, you get fast and reliable database operations, perfectly suited for any Aoi.js bot project.</p>
+  <p>aoijs.mysql makes it effortless to connect your Aoi.js Discord bot to a MySQL database. Leveraging the power of mysql2, you get fast and reliable database operations, perfectly suited for any Aoi.js bot project.</p>
   <br>
   <h2>🔥  Installation</h2>
 
@@ -21,7 +21,7 @@ npm install aoijs.mysql
 
 ```javascript
 const { AoiClient } = require('aoi.js');
-const { Database } = require('aoi.mysql');  // Import the Aoi.MySQL package
+const { Database } = require('aoijs.mysql');  // Import the Aoi.MySQL package
 
 const client = new AoiClient({
     token: 'YOUR_TOKEN',
