@@ -8,7 +8,7 @@ const promise_1 = require("mysql2/promise");
 const Logger_1 = require("./Logger");
 const Functions_1 = require("./Functions");
 const events_1 = __importDefault(require("events"));
-const package_json_1 = __importDefault(require("../../../package.json"));
+const package_json_1 = __importDefault(require("../../package.json"));
 const chalk_1 = __importDefault(require("chalk"));
 /**
  * @class Database
