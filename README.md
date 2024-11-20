@@ -1,7 +1,3 @@
-<div align="center">
-  <img src="https://raw.githubusercontent.com/tyowk/aoi.mysql/refs/heads/main/.github/uwu.png" width="150">
-</div>
-
 # aoijs.mysql
 
 aoijs.mysql makes it effortless to connect your aoi.js Discord bot to a MySQL database. Leveraging the power of mysql2, you get fast and reliable database operations, perfectly suited for any aoi.js bot project.</p>
