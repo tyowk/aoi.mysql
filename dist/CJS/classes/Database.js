@@ -425,9 +425,11 @@ class Database extends events_1.default {
             ], { text: ' Aoi.MySQL ', textColor: 'cyan' });
             return process.exit(1);
         }
-        if (this._options.debug === true)
+        if (this._options.debug !== true) {
+            return console.log(err);
+        } else {
             throw new Error(err);
-        console.error(err);
+        }
     }
     /**
      * Bind the database functions to the aoi.js client.
