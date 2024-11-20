@@ -3,9 +3,9 @@
   <h1>aoijs.mysql</h1>
   <br>
 
-  [![NPM downloads](https://img.shields.io/npm/dt/aoi.mysql.svg?color=3182b0&style=for-the-badge)](https://npmjs.com/package/aoi.mysql)&nbsp;&nbsp;
-  [![NPM version](http://img.shields.io/npm/v/aoi.mysql.svg?color=3182b0&style=for-the-badge)](http://npmjs.com/package/aoi.mysql)&nbsp;&nbsp;
-  ![NPM License](https://img.shields.io/npm/l/aoi.mysql?color=3182b0&style=for-the-badge)
+  [![NPM downloads](https://img.shields.io/npm/dt/aoijs.mysql.svg?color=3182b0&style=for-the-badge)](https://npmjs.com/package/aoijs.mysql)&nbsp;&nbsp;
+  [![NPM version](http://img.shields.io/npm/v/aoijs.mysql.svg?color=3182b0&style=for-the-badge)](http://npmjs.com/package/aoijs.mysql)&nbsp;&nbsp;
+  ![NPM License](https://img.shields.io/npm/l/aoijs.mysql?color=3182b0&style=for-the-badge)
   <br>
   <p>aoijs.mysql makes it effortless to connect your aoi.js Discord bot to a MySQL database. Leveraging the power of mysql2, you get fast and reliable database operations, perfectly suited for any aoi.js bot project.</p>
   <br>
