@@ -12,12 +12,7 @@
   <h2>🔥  Installation</h2>
 
 ```bash
-npm install aoi.mysql
-```
-<h2>📖  GitHub Install</h2>
-
-```bash
-npm i github:tyowk/aoi.mysql#main
+npm install aoijs.mysql
 ```
 <br>
 <br>
