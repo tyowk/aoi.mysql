@@ -189,8 +189,9 @@ export class Database extends EventEmitter {
             if (aoivars.includes(key)) {
                 const [rows] = await this._db.pool?.query(`SELECT value FROM \`${table}\` WHERE \`key\` = ?`, [queryKey]);
                 this._connection?.release();
-                if (this._options.debug) console.log(`[${chalk.blue('DEBUG')}] returning get(${table}, ${queryKey}) => ${rows?.length > 0 ? rows[0] : null}`);
-                return rows.length > 0 ? rows[0] : null;
+                const result = rows.length > 0 ? rows[0] : null;
+                if (this._options.debug) console.log(`[${chalk.blue('DEBUG')}] returning get(${table}, ${queryKey}) => `, result);
+                return result;
             }
 
             if (!this._variable.has(key, table)) return null;
@@ -198,7 +199,7 @@ export class Database extends EventEmitter {
             const [rows] = await this._db.pool?.query(`SELECT value FROM \`${table}\` WHERE \`key\` = ?`, [queryKey]);
             this._connection?.release();
             const result = rows.length > 0 ? rows[0] : (defaultValue ? { value: defaultValue } : null);
-            if (this._options.debug) console.log(`[${chalk.blue('DEBUG')}] returning get(${table}, ${queryKey}) => ${result}`);
+            if (this._options.debug) console.log(`[${chalk.blue('DEBUG')}] returning get(${table}, ${queryKey}) => `, result);
             return result;
         } catch (err) {
             this._handleError(err);
@@ -337,7 +338,7 @@ export class Database extends EventEmitter {
             if (limit) rows = rows.slice(0, limit);
             this._connection?.release();
             const result = rows.map((row: any) => ({ ...row, data: { value: row.value } }));
-            if (this._options.debug) console.log(`[${chalk.blue('DEBUG')}] returning findMany(${table}, ${query}, ${limit}) => ${result}`);
+            if (this._options.debug) console.log(`[${chalk.blue('DEBUG')}] returning findMany(${table}, ${query}, ${limit}) => `, result);
             return result
         } catch (err) {
             this._handleError(err);
@@ -364,7 +365,7 @@ export class Database extends EventEmitter {
             const results = rows.filter(filter).map((row: any) => ({ key: row.key, value: row.value }));
             this._connection?.release();
             const result = results.slice(0, list);
-            if (this._options.debug) console.log(`[${chalk.blue('DEBUG')}] returning all(${table}, ${filter}, ${list}, ${sort}) => ${result}`);
+            if (this._options.debug) console.log(`[${chalk.blue('DEBUG')}] returning all(${table}, ${filter}, ${list}, ${sort}) => `, result);
             return result;
         } catch (err) {
             this._handleError(err);
