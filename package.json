@@ -1,6 +1,6 @@
 {
     "name": "aoi.mysql",
-    "version": "3.6.0-dev",
+    "version": "3.7.0",
     "description": "Implementation of MySQL in Aoi.js",
     "type": "commonjs",
     "main": "dist/CJS/index.js",
@@ -47,16 +47,13 @@
         "type": "git",
         "url": "git+https://github.com/tyowk/aoi.mysql.git"
     },
-    "funding": [
-        {
-            "type": "individual",
-            "url": "https://trakteer.id/tyowk"
-        },
-        {
-            "type": "patreon",
-            "url": "https://www.patreon.com/tyowk_official"
-        }
-    ],
+    "funding": [{
+        "type": "individual",
+        "url": "https://trakteer.id/tyowk"
+    },{
+        "type": "patreon",
+        "url": "https://www.patreon.com/tyowk_official"
+    }],
     "bugs": {
         "url": "https://github.com/tyowk/aoi.mysql/issues"
     },
