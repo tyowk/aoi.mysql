@@ -53,7 +53,7 @@ client.variables({
 <h1 align="center">Aoi.DB</h1>
 
 ## 📁  Keep Your Aoi.DB Database
-If you have an existing aoi.db database, you can continue to use it alongside Aoi.MySQL. Just ensure that your setup is correctly configured:
+If you have an existing aoi.db database, you can continue to use it alongside aoijs.mysql. Just ensure that your setup is correctly configured:
 
 ```javascript
 const client = new AoiClient({
