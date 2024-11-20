@@ -417,13 +417,10 @@ export class Database extends EventEmitter {
                 { text: `Failed to connect to MySQL database`, textColor: 'red' },
                 { text: err.message, textColor: 'white' }
             ], { text: ' Aoi.MySQL ', textColor: 'cyan' });
-            return process.exit(1);
+            process.exit(1);
+            return;
         }
-        if (this._options.debug !== true) {
-            return console.log(err);
-        } else {
-            throw new Error(err);
-        }
+        throw new Error(err);
     }
     /**
      * Bind the database functions to the aoi.js client.
