@@ -20,20 +20,20 @@ const { AoiClient } = require('aoi.js');
 const { Database } = require('aoijs.mysql');  // Import the Aoi.MySQL package
 
 const client = new AoiClient({
-    token: 'YOUR_TOKEN',
-    prefix: 'YOUR_PREFIX',
+    token: 'your_token',
+    prefix: 'your_prefix',
     intents: ['Guilds', 'GuildMessages', 'GuildMembers', 'MessageContent'],
     events: ['onMessage', 'onInteractionCreate'],
     database: { ... },  // Your Aoi.DB options
-    disableAoiDB: true | false  // Set to true if using only Aoi.MySQL
+    disableAoiDB: true / false  // Set to true if using only Aoi.MySQL
 });
 
 // Initialize the MySQL Database
 new Database(client, {
-    url: 'mysql://YOUR_DATABASE_URL',  // Replace with your MySQL server URI
+    url: 'mysql://your_database_url...',  // Replace with your MySQL server URI
     tables: ['main'],  // Specify your database tables
-    keepAoiDB: true | false,  // Set to true to use both aoi.db and MySQL
-    debug: true | false  // Set to true for debug information during development
+    keepAoiDB: true / false,  // Set to true to use both aoi.db and MySQL
+    debug: true / false  // Set to true for debug information during development
 });
 
 // Client variables setup
