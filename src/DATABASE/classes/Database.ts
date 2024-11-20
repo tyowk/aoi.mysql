@@ -411,11 +411,7 @@ export class Database extends EventEmitter {
             ], { text: ' Aoi.MySQL ', textColor: 'cyan' });
             return process.exit(1);
         }
-        if (this._options.debug !== true) {
-            return console.log(err);
-        } else {
-            throw new Error(err);
-        }
+        throw new Error(err);
     }
 
     /**
