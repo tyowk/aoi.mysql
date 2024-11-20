@@ -404,15 +404,18 @@ export class Database extends EventEmitter {
     private _handleError(err: any, type?: string): undefined {
         this.emit('error', err, this._options.keepAoiDB ? this._client.mysql : this._client.db, this._client);
         if (type === 'failed') {
-        this.emit('disconnect', err, this._options.keepAoiDB ? this._client.mysql : this._client.db, this._client);
+            this.emit('disconnect', err, this._options.keepAoiDB ? this._client.mysql : this._client.db, this._client);
             this._logger([
                 { text: `Failed to connect to MySQL database`, textColor: 'red' },
                 { text: err.message, textColor: 'white' }
             ], { text: ' Aoi.MySQL ', textColor: 'cyan' });
             return process.exit(1);
         }
-        if (this._options.debug === true) throw new Error(err);
-        console.error(err);
+        if (this._options.debug !== true) {
+            return console.log(err);
+        } else {
+            throw new Error(err);
+        }
     }
 
     /**
