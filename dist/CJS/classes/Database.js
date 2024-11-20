@@ -9,6 +9,7 @@ const Logger_1 = require("./Logger");
 const Functions_1 = require("./Functions");
 const events_1 = __importDefault(require("events"));
 const package_json_1 = __importDefault(require("../../../package.json"));
+const chalk_1 = __importDefault(require("chalk"));
 /**
  * @class Database
  * @extends {EventEmitter}
@@ -75,6 +76,8 @@ class Database extends events_1.default {
      */
     async _connect() {
         try {
+            if (this._options.debug)
+                console.log(`[${chalk_1.default.blue('DEBUG')}] :: connecting database...`);
             if (!this._client)
                 throw new Error('Client instance is not defined.');
             if (!this._options)
@@ -157,6 +160,8 @@ class Database extends events_1.default {
                 throw new Error(`Table "${table}" is not defined in options. Please provide it!`);
             if (await this.isTableExists(table))
                 return;
+            if (this._options.debug)
+                console.log(`[${chalk_1.default.blue('DEBUG')}] preparing table ${chalk_1.default.cyan(table || 'unknown')}...`);
             await this._db.pool?.query(`CREATE TABLE IF NOT EXISTS \`${table}\` (
                     \`key\` VARCHAR(255) NOT NULL PRIMARY KEY,
                     \`value\` LONGTEXT NOT NULL
@@ -182,9 +187,13 @@ class Database extends events_1.default {
             if (!await this.isTableExists(table))
                 this.prepare(table);
             const queryKey = `${key}_${id}`;
+            if (this._options.debug)
+                console.log(`[${chalk_1.default.blue('DEBUG')}] rechieving get(${table}, ${queryKey})`);
             if (aoivars.includes(key)) {
                 const [rows] = await this._db.pool?.query(`SELECT value FROM \`${table}\` WHERE \`key\` = ?`, [queryKey]);
                 this._connection?.release();
+                if (this._options.debug)
+                    console.log(`[${chalk_1.default.blue('DEBUG')}] returning get(${table}, ${queryKey}) => ${rows?.length > 0 ? rows[0] : null}`);
                 return rows.length > 0 ? rows[0] : null;
             }
             if (!this._variable.has(key, table))
@@ -192,7 +201,10 @@ class Database extends events_1.default {
             const defaultValue = this._variable.get(key, table)?.default;
             const [rows] = await this._db.pool?.query(`SELECT value FROM \`${table}\` WHERE \`key\` = ?`, [queryKey]);
             this._connection?.release();
-            return rows.length > 0 ? rows[0] : (defaultValue ? { value: defaultValue } : null);
+            const result = rows.length > 0 ? rows[0] : (defaultValue ? { value: defaultValue } : null);
+            if (this._options.debug)
+                console.log(`[${chalk_1.default.blue('DEBUG')}] returning get(${table}, ${queryKey}) => ${result}`);
+            return result;
         }
         catch (err) {
             this._handleError(err);
@@ -213,7 +225,11 @@ class Database extends events_1.default {
         try {
             if (!await this.isTableExists(table))
                 this.prepare(table);
+            if (this._options.debug)
+                console.log(`[${chalk_1.default.blue('DEBUG')}] rechieving set(${table}, ${key}_${id}, ${value})`);
             await this._db.pool?.query(`INSERT INTO \`${table}\` (\`key\`, \`value\`) VALUES (?, ?) ON DUPLICATE KEY UPDATE \`value\` = ?`, [`${key}_${id}`, value, value]);
+            if (this._options.debug)
+                console.log(`[${chalk_1.default.blue('DEBUG')}] returning set(${table}, ${key}_${id}, ${value}) => value updated`);
             this._connection?.release();
             return;
         }
@@ -234,11 +250,20 @@ class Database extends events_1.default {
             if (!await this.isTableExists(table))
                 this.prepare(table);
             if (variable) {
+                if (this._options.debug)
+                    console.log(`[${chalk_1.default.blue('DEBUG')}] rechieving drop(${table}, ${variable})`);
                 await this._db.pool?.query(`DELETE FROM \`${table}\` WHERE \`key\` = ?`, [variable]);
-                return this._connection?.release();
+                if (this._options.debug)
+                    console.log(`[${chalk_1.default.blue('DEBUG')}] returning drop(${table}, ${variable}) => variable deleted`);
+                this._connection?.release();
+                return;
             }
+            if (this._options.debug)
+                console.log(`[${chalk_1.default.blue('DEBUG')}] rechieving drop(${table})`);
             await this._db.pool?.query(`DROP TABLE IF EXISTS \`${table}\``);
             this._connection?.release();
+            if (this._options.debug)
+                console.log(`[${chalk_1.default.blue('DEBUG')}] returning drop(${table}) => table deleted`);
             return;
         }
         catch (err) {
@@ -257,6 +282,8 @@ class Database extends events_1.default {
         try {
             if (!await this.isTableExists(table))
                 this.prepare(table);
+            if (this._options.debug)
+                console.log(`[${chalk_1.default.blue('DEBUG')}] rechieving deleteMany(${table}, ${query})`);
             const [rows] = await this._db.pool?.query(`SELECT * FROM \`${table}\``);
             const keysToDelete = rows.filter(query).map((row) => row.key);
             if (keysToDelete.length === 0) {
@@ -266,6 +293,8 @@ class Database extends events_1.default {
             const placeholders = keysToDelete.map(() => '?').join(',');
             await this._db.pool?.query(`DELETE FROM \`${table}\` WHERE \`key\` IN (${placeholders})`, keysToDelete);
             this._connection?.release();
+            if (this._options.debug)
+                console.log(`[${chalk_1.default.blue('DEBUG')}] returning deleteMany(${table}, ${query}) => deleted`);
             return;
         }
         catch (err) {
@@ -285,8 +314,12 @@ class Database extends events_1.default {
         try {
             if (!await this.isTableExists(table))
                 this.prepare(table);
+            if (this._options.debug)
+                console.log(`[${chalk_1.default.blue('DEBUG')}] rechieving delete(${table}, ${key}_${id})`);
             await this._db.pool?.query(`DELETE FROM \`${table}\` WHERE \`key\` = ?`, [`${key}_${id}`]);
             this._connection?.release();
+            if (this._options.debug)
+                console.log(`[${chalk_1.default.blue('DEBUG')}] returning delete(${table}, ${key}_${id}) => deleted`);
             return;
         }
         catch (err) {
@@ -306,13 +339,18 @@ class Database extends events_1.default {
         try {
             if (!await this.isTableExists(table))
                 this.prepare(table);
+            if (this._options.debug)
+                console.log(`[${chalk_1.default.blue('DEBUG')}] rechieving findMany(${table}, ${query}, ${limit})`);
             let [rows] = await this._db.pool?.query(`SELECT * FROM \`${table}\``);
             if (typeof query === 'function')
                 rows = rows.filter(query);
             if (limit)
                 rows = rows.slice(0, limit);
             this._connection?.release();
-            return rows.map((row) => ({ ...row, data: { value: row.value } }));
+            const result = rows.map((row) => ({ ...row, data: { value: row.value } }));
+            if (this._options.debug)
+                console.log(`[${chalk_1.default.blue('DEBUG')}] returning findMany(${table}, ${query}, ${limit}) => ${result}`);
+            return result;
         }
         catch (err) {
             this._handleError(err);
@@ -333,10 +371,15 @@ class Database extends events_1.default {
         try {
             if (!await this.isTableExists(table))
                 this.prepare(table);
+            if (this._options.debug)
+                console.log(`[${chalk_1.default.blue('DEBUG')}] rechieving all(${table}, ${filter}, ${list}, ${sort})`);
             const [rows] = await this._db.pool?.query(`SELECT * FROM \`${table}\` ORDER BY \`value\` ${sort.toUpperCase()}`);
             const results = rows.filter(filter).map((row) => ({ key: row.key, value: row.value }));
             this._connection?.release();
-            return results.slice(0, list);
+            const result = results.slice(0, list);
+            if (this._options.debug)
+                console.log(`[${chalk_1.default.blue('DEBUG')}] returning all(${table}, ${filter}, ${list}, ${sort}) => ${result}`);
+            return result;
         }
         catch (err) {
             this._handleError(err);
@@ -351,8 +394,12 @@ class Database extends events_1.default {
     */
     async ping(start = Date.now()) {
         try {
+            if (this._options.debug)
+                console.log(`[${chalk_1.default.blue('DEBUG')}] rechieving ping()`);
             await this._db.pool?.query('SELECT 1');
             this._connection?.release();
+            if (this._options.debug)
+                console.log(`[${chalk_1.default.blue('DEBUG')}] returning ping() => ${Date.now() - start}ms`);
             return Date.now() - start;
         }
         catch (err) {

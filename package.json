@@ -37,6 +37,7 @@
     "author": "Tyowk <tyowk@outlook.com>",
     "license": "MIT",
     "dependencies": {
+        "chalk": "^4.1.2",
         "mysql2": "^3.11.4"
     },
     "devDependencies": {

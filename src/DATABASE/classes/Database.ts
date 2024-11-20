@@ -3,6 +3,7 @@ import { Logger } from './Logger';
 import { Functions } from './Functions';
 import EventEmitter from 'events';
 import pkg from '../../../package.json';
+import chalk from 'chalk';
 
 /**
  * @class Database
@@ -74,6 +75,8 @@ export class Database extends EventEmitter {
     
     private async _connect(): Promise<undefined> {
         try {
+            if (this._options.debug)
+                console.log(`[${chalk.blue('DEBUG')}] :: connecting database...`);
             if (!this._client)
                 throw new Error('Client instance is not defined.');
             if (!this._options)
@@ -149,9 +152,9 @@ export class Database extends EventEmitter {
 
     public async prepare(table: string): Promise<undefined> {
         try {
-            if (!this._db.tables.includes(table))
-                throw new Error(`Table "${table}" is not defined in options. Please provide it!`);
+            if (!this._db.tables.includes(table)) throw new Error(`Table "${table}" is not defined in options. Please provide it!`);
             if (await this.isTableExists(table)) return;
+            if (this._options.debug) console.log(`[${chalk.blue('DEBUG')}] preparing table ${chalk.cyan(table || 'unknown')}...`);
             
             await this._db.pool?.query(
                 `CREATE TABLE IF NOT EXISTS \`${table}\` (
@@ -181,9 +184,12 @@ export class Database extends EventEmitter {
         try {
             if (!await this.isTableExists(table)) this.prepare(table);
             const queryKey = `${key}_${id}`;
+            if (this._options.debug) console.log(`[${chalk.blue('DEBUG')}] rechieving get(${table}, ${queryKey})`);
+            
             if (aoivars.includes(key)) {
                 const [rows] = await this._db.pool?.query(`SELECT value FROM \`${table}\` WHERE \`key\` = ?`, [queryKey]);
                 this._connection?.release();
+                if (this._options.debug) console.log(`[${chalk.blue('DEBUG')}] returning get(${table}, ${queryKey}) => ${rows?.length > 0 ? rows[0] : null}`);
                 return rows.length > 0 ? rows[0] : null;
             }
 
@@ -191,7 +197,9 @@ export class Database extends EventEmitter {
             const defaultValue = this._variable.get(key, table)?.default;
             const [rows] = await this._db.pool?.query(`SELECT value FROM \`${table}\` WHERE \`key\` = ?`, [queryKey]);
             this._connection?.release();
-            return rows.length > 0 ? rows[0] : (defaultValue ? { value: defaultValue } : null);
+            const result = rows.length > 0 ? rows[0] : (defaultValue ? { value: defaultValue } : null);
+            if (this._options.debug) console.log(`[${chalk.blue('DEBUG')}] returning get(${table}, ${queryKey}) => ${result}`);
+            return result;
         } catch (err) {
             this._handleError(err);
             return null;
@@ -212,10 +220,14 @@ export class Database extends EventEmitter {
     public async set(table: string, key: string, id: number, value: any): Promise<undefined> {
         try {
             if (!await this.isTableExists(table)) this.prepare(table);
+            if (this._options.debug) console.log(`[${chalk.blue('DEBUG')}] rechieving set(${table}, ${key}_${id}, ${value})`);
+                
             await this._db.pool?.query(
                 `INSERT INTO \`${table}\` (\`key\`, \`value\`) VALUES (?, ?) ON DUPLICATE KEY UPDATE \`value\` = ?`, 
                 [`${key}_${id}`, value, value]
             );
+            
+            if (this._options.debug) console.log(`[${chalk.blue('DEBUG')}] returning set(${table}, ${key}_${id}, ${value}) => value updated`);
             this._connection?.release();
             return;
         } catch (err) {
@@ -236,11 +248,17 @@ export class Database extends EventEmitter {
         try {
             if (!await this.isTableExists(table)) this.prepare(table);
             if (variable) {
+                if (this._options.debug) console.log(`[${chalk.blue('DEBUG')}] rechieving drop(${table}, ${variable})`);
                 await this._db.pool?.query(`DELETE FROM \`${table}\` WHERE \`key\` = ?`, [variable]);
-                return this._connection?.release();
+                if (this._options.debug) console.log(`[${chalk.blue('DEBUG')}] returning drop(${table}, ${variable}) => variable deleted`);
+                this._connection?.release();
+                return;
             }
+            
+            if (this._options.debug) console.log(`[${chalk.blue('DEBUG')}] rechieving drop(${table})`);
             await this._db.pool?.query(`DROP TABLE IF EXISTS \`${table}\``);
             this._connection?.release();
+            if (this._options.debug) console.log(`[${chalk.blue('DEBUG')}] returning drop(${table}) => table deleted`);
             return;
         } catch (err) {
             this._handleError(err);
@@ -259,6 +277,7 @@ export class Database extends EventEmitter {
     public async deleteMany(table: string, query: (row: any) => boolean): Promise<undefined> {
         try {
             if (!await this.isTableExists(table)) this.prepare(table);
+            if (this._options.debug) console.log(`[${chalk.blue('DEBUG')}] rechieving deleteMany(${table}, ${query})`);
             const [rows] = await this._db.pool?.query(`SELECT * FROM \`${table}\``);
             const keysToDelete = rows.filter(query).map((row: any) => row.key);
             if (keysToDelete.length === 0) {
@@ -269,6 +288,7 @@ export class Database extends EventEmitter {
             const placeholders = keysToDelete.map(() => '?').join(',');
             await this._db.pool?.query(`DELETE FROM \`${table}\` WHERE \`key\` IN (${placeholders})`, keysToDelete);
             this._connection?.release();
+            if (this._options.debug) console.log(`[${chalk.blue('DEBUG')}] returning deleteMany(${table}, ${query}) => deleted`);
             return;
         } catch (err) {
             this._handleError(err);
@@ -288,8 +308,10 @@ export class Database extends EventEmitter {
     public async delete(table: string, key: string, id: number): Promise<undefined> {
         try {
             if (!await this.isTableExists(table)) this.prepare(table);
+            if (this._options.debug) console.log(`[${chalk.blue('DEBUG')}] rechieving delete(${table}, ${key}_${id})`);
             await this._db.pool?.query(`DELETE FROM \`${table}\` WHERE \`key\` = ?`, [`${key}_${id}`]);
             this._connection?.release();
+            if (this._options.debug) console.log(`[${chalk.blue('DEBUG')}] returning delete(${table}, ${key}_${id}) => deleted`);
             return;
         } catch (err) {
             this._handleError(err);
@@ -309,11 +331,14 @@ export class Database extends EventEmitter {
     public async findMany(table: string, query: (row: any) => boolean, limit?: number): Promise<object|null> {
         try {
             if (!await this.isTableExists(table)) this.prepare(table);
+            if (this._options.debug) console.log(`[${chalk.blue('DEBUG')}] rechieving findMany(${table}, ${query}, ${limit})`);
             let [rows] = await this._db.pool?.query(`SELECT * FROM \`${table}\``);
             if (typeof query === 'function') rows = rows.filter(query);
             if (limit) rows = rows.slice(0, limit);
             this._connection?.release();
-            return rows.map((row: any) => ({ ...row, data: { value: row.value } }));
+            const result = rows.map((row: any) => ({ ...row, data: { value: row.value } }));
+            if (this._options.debug) console.log(`[${chalk.blue('DEBUG')}] returning findMany(${table}, ${query}, ${limit}) => ${result}`);
+            return result
         } catch (err) {
             this._handleError(err);
             return null;
@@ -334,10 +359,13 @@ export class Database extends EventEmitter {
     public async all(table: string, filter: (row: any) => boolean, list: number = 100, sort: 'asc' | 'desc' = 'asc'): Promise<object|null> {
         try {
             if (!await this.isTableExists(table)) this.prepare(table);
+            if (this._options.debug) console.log(`[${chalk.blue('DEBUG')}] rechieving all(${table}, ${filter}, ${list}, ${sort})`);
             const [rows] = await this._db.pool?.query(`SELECT * FROM \`${table}\` ORDER BY \`value\` ${sort.toUpperCase()}`);
             const results = rows.filter(filter).map((row: any) => ({ key: row.key, value: row.value }));
             this._connection?.release();
-            return results.slice(0, list);
+            const result = results.slice(0, list);
+            if (this._options.debug) console.log(`[${chalk.blue('DEBUG')}] returning all(${table}, ${filter}, ${list}, ${sort}) => ${result}`);
+            return result;
         } catch (err) {
             this._handleError(err);
             return null;
@@ -353,8 +381,10 @@ export class Database extends EventEmitter {
     
     public async ping(start = Date.now()): Promise<number> {
         try {
+            if (this._options.debug) console.log(`[${chalk.blue('DEBUG')}] rechieving ping()`);
             await this._db.pool?.query('SELECT 1');
             this._connection?.release();
+            if (this._options.debug) console.log(`[${chalk.blue('DEBUG')}] returning ping() => ${Date.now() - start}ms`);
             return Date.now() - start;
         } catch (err) {
             this._handleError(err);
