@@ -89,6 +89,7 @@ class Database extends events_1.default {
                 this.prepare(table);
             }
             this.emit('connect', this._options.keepAoiDB ? this._client.mysql : this._client.db, this._client);
+            if (this._client?.aoiOptions?.aoiLogs === false) return;
             this._logger([
                 { text: `Latency: ${await this.ping()}ms`, textColor: 'green' },
                 { text: `Successfully connected to MySQL database`, textColor: 'blue' },
@@ -388,6 +389,7 @@ class Database extends events_1.default {
      */
     _handleError(err, type) {
         this.emit('error', err, this._options.keepAoiDB ? this._client.mysql : this._client.db, this._client);
+        if (this._client?.aoiOptions?.suppressAllErrors === true) return;
         if (type === 'failed') {
             this.emit('disconnect', err, this._options.keepAoiDB ? this._client.mysql : this._client.db, this._client);
             this._logger([
