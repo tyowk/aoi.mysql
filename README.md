@@ -18,29 +18,14 @@ npm i github:tyowk/aoijs.mysql#main
 const { AoiClient } = require('aoi.js');
 const { Database } = require('aoijs.mysql');  // Import the Aoi.MySQL package
 
-const client = new AoiClient({
-    token: 'your_token',
-    prefix: 'your_prefix',
-    intents: ['Guilds', 'GuildMessages', 'GuildMembers', 'MessageContent'],
-    events: ['onMessage', 'onInteractionCreate'],
-    database: { ... },  // Your Aoi.DB options
-    disableAoiDB: true / false  // Set to true if using only Aoi.MySQL
-});
+const client = new AoiClient({ ... });
 
-// Initialize the MySQL Database
 new Database(client, {
-    url: 'mysql://your_database_url...',  // Replace with your MySQL server URI
-    tables: ['main'],  // Specify your database tables
-    keepAoiDB: true / false,  // Set to true to use both aoi.db and MySQL
-    debug: true / false  // Set to true for debug information during development
+    url: 'mysql://your_database_url...',      // Replace with your MySQL server URI
+    tables: ['main'],                         // Specify your database tables                              # default is main
+    keepAoiDB: false,                         // Set to true to use both aoi.db and MySQL                  # default is false
+    debug: false                              // Set to true for debug information during development      # default is false
 });
-
-// Client variables setup
-client.variables({
-    key: 'value'  // Define client variables here
-});
-
-// Continue with the rest of your bot's setup...
 ```
 
 ---
@@ -51,15 +36,14 @@ If you have an existing aoi.db database, you can continue to use it alongside ao
 
 ```javascript
 const client = new AoiClient({
-    // ... Your client options
-    database: { ... },  // Your Aoi.DB options
-    disableAoiDB: false  // Must be false to use both databases
+    . . .
+    database: { ... },           // Your Aoi.DB options
+    disableAoiDB: false          // Must be false to use both databases
 });
 
-// Initialize the MySQL Database
 new Database(client, {
-    // ... Your MySQL database options
-    keepAoiDB: true  // This should be set to true
+    . . .
+    keepAoiDB: true              // This should be set to true
 });
 ```
 
