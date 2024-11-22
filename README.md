@@ -16,7 +16,7 @@ npm i github:tyowk/aoijs.mysql#main
 
 ```javascript
 const { AoiClient } = require('aoi.js');
-const { Database } = require('aoijs.mysql');  // Import the Aoi.MySQL package
+const { Database } = require('aoijs.mysql');  // Import the aoijs.mysql package
 
 const client = new AoiClient({ ... });
 
