@@ -39,6 +39,7 @@ class Database extends events_1.default {
         this._options = options;
         this._logger = Logger_1.Logger;
         this._variable = client?.variableManager;
+        options.tables = options.tables || ['main'];
         this._db = {
             pool: (0, promise_1.createPool)(options.url || options),
             tables: [...options.tables, '__aoijs_vars__']
