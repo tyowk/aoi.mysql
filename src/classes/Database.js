@@ -238,7 +238,7 @@ exports.Database = class Database extends EventEmitter {
                     avgPing: this.ping.bind(this),
                     ready: true,
                     readyAt: Date.now()
-                };
+                }
             });
         } catch (err) { this.#handleError(err) }
     }
