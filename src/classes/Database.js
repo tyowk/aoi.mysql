@@ -218,26 +218,28 @@ exports.Database = class Database extends EventEmitter {
         if (type === 'failed') return process.exit(1);
     }
 
-    #functionsBind(db) {
+    #functionsBind(db = this.options.keepAoiDB ? this.client?.mysql : this.client?.db) {
         try {
             this.#emitEvents(this.pool);
-            db.pool = this.pool;
-            db.query = this.pool.query.bind(this.pool);
-            db.tables = this.tables;
-            db.get = this.get.bind(this);
-            db.set = this.set.bind(this);
-            db.drop = this.drop.bind(this);
-            db.delete = this.delete.bind(this);
-            db.deleteMany = this.deleteMany.bind(this);
-            db.findMany = this.findMany.bind(this);
-            db.findOne = this.findOne.bind(this);
-            db.all = this.all.bind(this);
-            db.type = 'aoijs.mysql';
-            db.db = {
-                avgPing: this.ping.bind(this),
-                ready: true,
-                readyAt: Date.now()
-            };
+            Object.assign(db, {
+                ...this.pool,
+                prepare: this.prepare.bind(this),
+                tables: this.tables,
+                get: this.get.bind(this),
+                set: this.set.bind(this),
+                drop: this.drop.bind(this),
+                delete: this.delete.bind(this),
+                deleteMany: this.deleteMany.bind(this),
+                findMany: this.findMany.bind(this),
+                findOne: this.findOne.bind(this),
+                all: this.all.bind(this),
+                type: 'aoijs.mysql',
+                db: {
+                    avgPing: this.ping.bind(this),
+                    ready: true,
+                    readyAt: Date.now()
+                };
+            });
         } catch (err) { this.#handleError(err) }
     }
 
