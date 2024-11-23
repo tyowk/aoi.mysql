@@ -10,27 +10,25 @@ exports.Functions = class Functions {
                 const filePath = path.join(basePath, file);
                 const func = require(filePath);
                 if (fs.statSync(filePath).isDirectory()) {
-                    this.constructor(client, filePath);
-                }
-                else {
-                    try {
-                        if (!func || typeof func !== 'function') {
-                            if (debug) this.debug('error', file);
-                            continue;
-                        };
-
-                        const name = file.split('.')[0];
-                        if (debug) this.debug('success', file);
-                        client.functionManager.createFunction({
-                            name: `$${name}`,
-                            type: 'djs',
-                            code: func
-                        });
+                    new this.constructor(client, debug, filePath);
+                } else {
+                    if (typeof func !== 'function') {
+                        if (debug) this.debug('error', file);
+                        continue;
                     }
-                    catch (err) { if (debug) this.debug('error', file); }
+
+                    const name = file.split('.')[0];
+                    if (debug) this.debug('success', file);
+                    client.functionManager.createFunction({
+                        name: `$${name}`,
+                        type: 'djs',
+                        code: func
+                    });
                 }
             }
-        } catch (err) { console.error(err); }
+        } catch (err) { 
+            console.error(err); 
+        }
     }
     
     debug(type, file) {
