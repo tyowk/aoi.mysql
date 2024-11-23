@@ -1,8 +1,8 @@
-const { createConsoleMessage } = require("aoi.js/src/classes/AoiError");
-const { createPool } = require("mysql2/promise");
-const { Functions } = require("./Functions");
-const EventEmitter = require("events");
-const chalk = require("chalk");
+const { createConsoleMessage } = require('aoi.js/src/classes/AoiError');
+const { createPool } = require('mysql2/promise');
+const { Functions } = require('./Functions');
+const EventEmitter = require('events');
+const chalk = require('chalk');
 
 exports.Database = class Database extends EventEmitter {
     constructor(client, options) {
@@ -34,7 +34,7 @@ exports.Database = class Database extends EventEmitter {
                 { text: `If you only want to use MySQL, you need to add "disableAoiDB" in the client options and set it to "true".`, textColor: 'red' },
                 { text: ` `, textColor: 'white' },
                 { text: `But if you want to keep using your aoi.db database, you need to add "keepAoiDB" in the database options and set it to "true".`, textColor: 'red' }
-            ], { text: ' aoijs.mysql ', textColor: 'cyan' });
+            ], 'white', { text: ' aoijs.mysql ', textColor: 'cyan' });
             process.exit(1);
         }
         this.#connect();
@@ -53,7 +53,7 @@ exports.Database = class Database extends EventEmitter {
             createConsoleMessage([
                 { text: `Latency: ${await this.ping()}ms`, textColor: 'green' },
                 { text: `Successfully connected to MySQL database`, textColor: 'blue' },
-            ], { text: ' aoijs.mysql ', textColor: 'cyan' });
+            ], 'white', { text: ' aoijs.mysql ', textColor: 'cyan' });
         } catch (err) { this.#handleError(err, 'failed') }
     }
 
@@ -169,6 +169,19 @@ exports.Database = class Database extends EventEmitter {
         } catch (err) { this.#handleError(err); return null }
     }
 
+    async findOne(table, key) {
+        try {
+            if (!await this.isTableExists(table)) await this.prepare(table);
+            this.emit('debug', `retrieving findOne(${table}, ${queryKey})`);
+            if (!this.client.variableManager.has(key, table)) return null;
+            const defaultValue = this.client?.variableManager?.get(key, table)?.default;
+            const [rows] = await this.pool?.query(`SELECT value FROM \`${table}\` WHERE \`key\` = ?`, [key]);
+            const result = rows.length > 0 ? rows[0] : (defaultValue ? { value: defaultValue } : null);
+            this.emit('debug', `returning findOne(${table}, ${key}) => `, result);
+            return result;
+        } catch (err) { this.#handleError(err); return null }
+    }
+
     async all(table, filter, list = 100, sort = 'asc') {
         try {
             if (!await this.isTableExists(table)) await this.prepare(table);
@@ -198,7 +211,7 @@ exports.Database = class Database extends EventEmitter {
             createConsoleMessage([
                 { text: `Failed to connect to MySQL database`, textColor: 'red' },
                 { text: err.message, textColor: 'white' }
-            ], { text: ' aoijs.mysql ', textColor: 'cyan' });
+            ], 'white', { text: ' aoijs.mysql ', textColor: 'cyan' });
             process.exit(1);
         }
         throw new Error(err);
@@ -216,6 +229,7 @@ exports.Database = class Database extends EventEmitter {
             db.delete = this.delete.bind(this);
             db.deleteMany = this.deleteMany.bind(this);
             db.findMany = this.findMany.bind(this);
+            db.findOne = this.findOne.bind(this);
             db.all = this.all.bind(this);
             db.type = 'aoijs.mysql';
             db.db = {
