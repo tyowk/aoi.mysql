@@ -173,10 +173,8 @@ exports.Database = class Database extends EventEmitter {
         try {
             if (!await this.isTableExists(table)) await this.prepare(table);
             this.emit('debug', `retrieving findOne(${table}, ${key})`);
-            if (!this.client.variableManager.has(key, table)) return null;
-            const defaultValue = this.client?.variableManager?.get(key, table)?.default;
             const [rows] = await this.pool?.query(`SELECT value FROM \`${table}\` WHERE \`key\` = ?`, [key]);
-            const result = rows.length > 0 ? rows[0] : (defaultValue ? { value: defaultValue } : null);
+            const result = rows.length > 0 ? rows[0] : null;
             this.emit('debug', `returning findOne(${table}, ${key}) => `, result);
             return result;
         } catch (err) { this.#handleError(err); return null }
