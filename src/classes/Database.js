@@ -5,10 +5,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Database = void 0;
 const promise_1 = require("mysql2/promise");
-const Logger_1 = require("./Logger");
 const Functions_1 = require("./Functions");
 const events_1 = __importDefault(require("events"));
 const chalk_1 = __importDefault(require("chalk"));
+const { createConsoleMessage } = require("aoi.js/src/classes/AoiError");
 /**
  * @class Database
  * @extends {EventEmitter}
@@ -37,7 +37,7 @@ class Database extends events_1.default {
         super();
         this._client = client;
         this._options = options;
-        this._logger = Logger_1.Logger;
+        this._logger = createConsoleMessage;
         this._variable = client?.variableManager;
         options.tables = options.tables || ['main'];
         this._db = {
