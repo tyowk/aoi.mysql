@@ -1,3 +1,6 @@
+> [!warning]
+> Some custom function is currently not working. Will be fixed soon!
+
 # aoijs.mysql
 
 aoijs.mysql makes it effortless to connect your aoi.js Discord bot to a MySQL database. Leveraging the power of mysql2, you get fast and reliable database operations, perfectly suited for any aoi.js bot project.</p>
