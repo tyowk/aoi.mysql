@@ -203,18 +203,19 @@ exports.Database = class Database extends EventEmitter {
         } catch (err) { this.#handleError(err); return -1 }
     }
 
-    #handleError(err, type) {
-        this.emit('error', err, this.options.keepAoiDB ? this.client.mysql : this.client.db, this.client);
-        if (this.client?.aoiOptions?.suppressAllErrors === true) return;
+    #handleError(err, type, db = this.options.keepAoiDB ? this.client?.mysql : this.client?.db) {
+        this.emit('error', err, db, this.client);
+        if (this.client?.aoiOptions?.suppressAllErrors) return;
+        let error = { text: 'An error occurred', color: 'red' };
         if (type === 'failed') {
-            this.emit('disconnect', err, this.options.keepAoiDB ? this.client.mysql : this.client.db, this.client);
-            createConsoleMessage([
-                { text: `Failed to connect to MySQL database`, textColor: 'red' },
-                { text: err.message, textColor: 'white' }
-            ], 'white', { text: ' aoijs.mysql ', textColor: 'cyan' });
-            process.exit(1);
-        }
-        throw new Error(err);
+            error.text = 'Database failed to connect';
+            this.emit('disconnect', err, db, this.client);
+        };
+        
+        createConsoleMessage([error, { text: err.message, textColor: 'red' }
+        ], 'white', { text: ' aoijs.mysql ', textColor: 'cyan' });
+        console.error(err);
+        if (type === 'failed') return process.exit(1);
     }
 
     #functionsBind(db) {
