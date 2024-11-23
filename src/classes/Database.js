@@ -10,29 +10,26 @@ class Database extends EventEmitter {
         options.tables = options.tables || ['main'];
         options.debug = options.debug || false;
         options.keepAoiDB = options.keepAoiDB || false;
-        
-        this.client = client;
-        this.options = options;
-        this = {
-            ...this,
+        Object.assign(this, {
+            client: client,
+            options: options,
             pool: createPool(options.url || options.uri || options),
             tables: [...options.tables, '__aoijs_vars__']
         };
+        
         if (options.keepAoiDB && !client.options?.disableAoiDB) {
-            client.mysql = {};
-            new Functions_1.Functions(client, options.debug);
-            this._functionsBind(client.mysql);
-            client.options.disableAoiDB = false;
+            this.client.mysql = {};
+            new Functions(client, options.debug);
+            this.#functionsBind(this.client.mysql);
+            this.client.options.disableAoiDB = false;
             options.keepAoiDB = true;
-        }
-        else if (!options.keepAoiDB && client.options?.disableAoiDB) {
-            client.db = {};
-            this._functionsBind(client.db);
-            client.options.disableAoiDB = true;
+        } else if (!options.keepAoiDB && client.options?.disableAoiDB) {
+            this.client.db = {};
+            this.#functionsBind(this.client.db);
+            this.client.options.disableAoiDB = true;
             options.keepAoiDB = false;
-        }
-        else {
-            this._logger([
+        } else {
+            createConsoleMessage([
                 { text: ` `, textColor: 'white' },
                 { text: `If you only want to use MySQL, you need to add "disableAoiDB" in the client options and set it to "true".`, textColor: 'red' },
                 { text: ` `, textColor: 'white' },
@@ -40,98 +37,51 @@ class Database extends EventEmitter {
             ], { text: ' aoijs.mysql ', textColor: 'cyan' });
             process.exit(1);
         }
-        this._connect();
+        this.#connect();
     }
-    /**
-     * Connects to the database.
-     *
-     * @return {any} - UNDEFINED.
-     * @throws {Error} - Throws an error if the connection fails.
-     */
-    async _connect() {
+    
+    async #connect() {
         try {
-            if (this._options.debug)
-                console.log(`[${chalk_1.default.blue('DEBUG')}] :: connecting database...`);
-            if (!this._client)
-                throw new Error('Client instance is not defined.');
-            if (!this._options)
-                throw new Error('Missing database settings in options.');
-            if (!this._options.tables || this._options.tables.length === 0)
-                throw new Error('No variable tables specified in options. Please provide at least one table.');
-            if (this._options.tables.includes('__aoijs_vars__'))
-                throw new Error('"__aoijs_vars__" is reserved as a table name and cannot be used.');
-            for (const table of this._db.tables) {
-                this.prepare(table);
-            }
-            this.emit('connect', this._options.keepAoiDB ? this._client.mysql : this._client.db, this._client);
-            if (this._client?.aoiOptions?.aoiLogs === false) return;
-            this._logger([
+            this.emit('debug', `[${chalk.blue('DEBUG')}] :: connecting database...`);
+            if (!this.client) throw new Error('Client instance is not defined.');
+            if (!this.options) throw new Error('Missing database settings in options.');
+            if (!this.options.tables || this.options.tables.length === 0) throw new Error('No variable tables specified in options. Please provide at least one table.');
+            if (this.options.tables.includes('__aoijs_vars__')) throw new Error('"__aoijs_vars__" is reserved as a table name and cannot be used.');
+            for (const table of this.tables) { this.prepare(table) };
+            this.emit('connect', this.options.keepAoiDB ? this.client.mysql : this.client.db, this.client);
+            if (this.client?.aoiOptions?.aoiLogs === false) return;
+            createConsoleMessage([
                 { text: `Latency: ${await this.ping()}ms`, textColor: 'green' },
                 { text: `Successfully connected to MySQL database`, textColor: 'blue' },
             ], { text: ' aoijs.mysql ', textColor: 'cyan' });
-        }
-        catch (err) {
-            this._handleError(err, 'failed');
-        }
+        } catch (err) { this.#handleError(err, 'failed') }
     }
-    /**
-     * Add a variables.
-     *
-     * @param {object} data - The variables data.
-     * @param {string} table - The table name.
-     * @return {undefined} - UNDEFINED.
-     * @throws {Error} - Throw an error if the function is crashed.
-     */
-    variables(data, table) {
+    
+    variables(data, table = this.tables[0] || 'main') {
         try {
-            const db = this._options.keepAoiDB ? this._client.mysql : this._client.db;
-            table = table || db.tables[0];
-            if (!data || typeof data !== 'object' || !table)
-                return;
-            if (!db)
-                throw new Error('You need to initialize the database first before add variables.');
-            for (const [name, value] of Object.entries(data)) {
-                this._variable.add({ name, value, table });
-            }
-        }
-        catch (err) {
-            this._handleError(err);
-        }
+            const db = this.options.keepAoiDB ? this.client.mysql : this.client.db;
+            if (!data || typeof data !== 'object' || !table) return;
+            if (!db) throw new Error('You need to initialize the database first before add variables.');
+            for (const [name, value] of Object.entries(data)) { this.client?.variableManager?.add({ name, value, table }) }
+        } catch (err) { this._handleError(err) }
     }
-    /**
-     * Checking if the table exists.
-     *
-     * @param {string} table - The table name.
-     * @return {boolean} - Returns true if the table exists, otherwise false.
-     */
+    
     async isTableExists(table) {
-        const [rows] = await this._db.pool?.query(`SHOW TABLES LIKE ?`, [table]);
+        const [rows] = await this.pool?.query(`SHOW TABLES LIKE ?`, [table]);
         return rows.length > 0;
     }
-    /**
-     * Prepares a table.
-     *
-     * @param {string} table - The table name.
-     * @return {Promise<undefined>} - UNDEFINED.
-     * @throws {Error} - Throws an error if the table cannot be prepared.
-     */
+    
     async prepare(table) {
         try {
-            if (!this._db.tables.includes(table))
-                throw new Error(`Table "${table}" is not defined in options. Please provide it!`);
-            if (await this.isTableExists(table))
-                return;
-            if (this._options.debug)
-                console.log(`[${chalk_1.default.blue('DEBUG')}] preparing table ${chalk_1.default.cyan(table || 'unknown')}...`);
+            if (!this.tables.includes(table)) throw new Error(`Table "${table}" is not defined in options. Please provide it!`);
+            if (await this.isTableExists(table)) return;
+            this.emit('debug', `[${chalk.blue('DEBUG')}] preparing table ${chalk.cyan(table || 'unknown')}...`);
             await this._db.pool?.query(`CREATE TABLE IF NOT EXISTS \`${table}\` (
                     \`key\` VARCHAR(255) NOT NULL PRIMARY KEY,
                     \`value\` LONGTEXT NOT NULL
                 );`);
             return;
-        }
-        catch (err) {
-            this._handleError(err);
-        }
+        } catch (err) { this._handleError(err) }
     }
     /**
      * Get a value from the database.
