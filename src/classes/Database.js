@@ -1,47 +1,21 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.Database = void 0;
-const promise_1 = require("mysql2/promise");
-const Functions_1 = require("./Functions");
-const events_1 = __importDefault(require("events"));
-const chalk_1 = __importDefault(require("chalk"));
 const { createConsoleMessage } = require("aoi.js/src/classes/AoiError");
-/**
- * @class Database
- * @extends {EventEmitter}
- *
- * @param {any} client - The client instance.
- * @param {any} options - The configuration options for database.
- * @return {any} - The database instance.
- * @throws {Error} - Throw an error if the database is not configured.
- */
-class Database extends events_1.default {
-    _client;
-    _db;
-    _connection;
-    _options;
-    _logger;
-    _variable;
-    /**
-     * Creates an instance of Database.
-     *
-     * @param {any} client - The client instance.
-     * @param {any} options - Configuration options for database.
-     * @return {any} - UNDEFINED
-     * @throws {Error} - Throws an error if the setup fails
-     */
+const { createPool } = require("mysql2/promise");
+const { Functions } = require("./Functions");
+const EventEmitter = require("events");
+const chalk = require("chalk");
+
+class Database extends EventEmitter {
     constructor(client, options) {
         super();
-        this._client = client;
-        this._options = options;
-        this._logger = createConsoleMessage;
-        this._variable = client?.variableManager;
         options.tables = options.tables || ['main'];
-        this._db = {
-            pool: (0, promise_1.createPool)(options.url || options),
+        options.debug = options.debug || false;
+        options.keepAoiDB = options.keepAoiDB || false;
+        
+        this.client = client;
+        this.options = options;
+        this = {
+            ...this,
+            pool: createPool(options.url || options.uri || options),
             tables: [...options.tables, '__aoijs_vars__']
         };
         if (options.keepAoiDB && !client.options?.disableAoiDB) {
