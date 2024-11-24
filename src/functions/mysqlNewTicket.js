@@ -1,6 +1,5 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const discord_js_1 = require("discord.js");
+const { Guild } = require('discord.js');
+
 module.exports = async (d) => {
     const data = d.util.aoiFunc(d);
     if (data.err)
@@ -12,7 +11,7 @@ module.exports = async (d) => {
     if (!createAt)
         return d.aoiError.fnError(d, "custom", { inside: data.inside }, "Invalid parentId Provided In");
     let channel;
-    if (createAt instanceof discord_js_1.Guild) {
+    if (createAt instanceof Guild) {
         channel = await createAt.channels
             .create({ name: name?.addBrackets() })
             .catch(async (err) => {
