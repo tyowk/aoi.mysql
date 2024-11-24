@@ -1,6 +1,5 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const Time_1 = require("../classes/Time");
+const { Time } = require('aoi.js/src/core/Time');
+
 module.exports = async (d) => {
     const data = d.util.aoiFunc(d);
     if (data.err)
@@ -9,14 +8,14 @@ module.exports = async (d) => {
     let error;
     let cooldown = await d.client.mysql.get(d.client.mysql.tables[0], "cooldown", `${d.command.name}_${d.guild?.id || "dm"}`);
     if (!cooldown) {
-        cooldown = Date.now() + Time_1.Time.parse(time).ms;
+        cooldown = Date.now() + Time.parse(time).ms;
         d.client.mysql.set(d.client.mysql.tables[0], "cooldown", `${d.command.name}_${d.guild?.id || "dm"}`, cooldown);
     }
     else if (Date.now() < cooldown.value) {
         if (errorObject.trim() === "") {
         }
         else {
-            const { object, humanize, toString } = Time_1.Time.format(cooldown.value - Date.now());
+            const { object, humanize, toString } = Time.format(cooldown.value - Date.now());
             errorObject = errorObject
                 .replaceAll("%time%", humanize())
                 .replaceAll("%year%", object.years)
@@ -34,7 +33,7 @@ module.exports = async (d) => {
         error = true;
     }
     else {
-        cooldown = Date.now() + Time_1.Time.parse(time).ms;
+        cooldown = Date.now() + Time.parse(time).ms;
         d.client.mysql.set(d.client.mysql.tables[0], "cooldown", `${d.command.name}_${d.guild?.id || "dm"}`, cooldown);
     }
     return {
