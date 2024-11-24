@@ -1,12 +1,11 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const Time_1 = require("../classes/Time");
+const { Time } = require('aoi.js/src/core/Time');
+
 module.exports = async (d) => {
     const data = d.util.aoiFunc(d);
     if (data.err)
         return d.error(data.err);
     let [time, _, cmdName, id] = data.inside.splits;
-    time = Time_1.Time.parse(time)?.ms;
+    time = Time.parse(time)?.ms;
     if (!time)
         return d.aoiError.fnError(d, "custom", { inside: data.inside }, "Time");
     const types = {
