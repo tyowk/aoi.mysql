@@ -12,7 +12,7 @@ aoijs.mysql makes it effortless to connect your aoi.js Discord bot to a MySQL da
 ## Installation
 
 ```bash
-npm i github:tyowk/aoijs.mysql#main
+npm i github:tyowk/aoijs.mysql
 ```
 
 ---
