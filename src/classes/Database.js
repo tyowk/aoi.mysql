@@ -7,6 +7,7 @@ const chalk = require('chalk');
 exports.Database = class Database extends EventEmitter {
     constructor(client, options) {
         super();
+        this.emit('debug', `connecting database...`);
         options.tables = options.tables || ['main'];
         options.debug = options.debug || false;
         options.keepAoiDB = options.keepAoiDB || false;
@@ -42,7 +43,6 @@ exports.Database = class Database extends EventEmitter {
 
     async #connect() {
         try {
-            this.emit('debug', `connecting database...`);
             if (!this.client) throw new Error('Client instance is not defined.');
             if (!this.options) throw new Error('Missing database settings in options.');
             if (!this.options.tables || this.options.tables.length === 0) throw new Error('No variable tables specified in options. Please provide at least one table.');
