@@ -51,8 +51,9 @@ exports.Database = class Database extends EventEmitter {
             this.emit('connect', this.options.keepAoiDB ? this.client.mysql : this.client.db, this.client);
             if (this.client?.aoiOptions?.aoiLogs === false) return;
             createConsoleMessage([
-                { text: `Latency: ${await this.ping()}ms`, textColor: 'green' },
-                { text: `Successfully connected to MySQL database`, textColor: 'blue' },
+                { text: `Latency: ${await this.ping()}ms`, textColor: 'whitr' },
+                { text: `Successfully connected to MySQL`, textColor: 'whitr' },
+                { text: `Installed on v${require('../../package.json').version || '0.0.0'}`, textColor: 'green' },
             ], 'white', { text: ' aoijs.mysql ', textColor: 'cyan' });
         } catch (err) { this.#handleError(err, 'failed') }
     }
