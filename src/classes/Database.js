@@ -205,6 +205,10 @@ exports.Database = class Database extends EventEmitter {
     #handleError(err, type, db = this.options.keepAoiDB ? this.client?.mysql : this.client?.db) {
         this.emit('error', err, db, this.client);
         if (this.client?.aoiOptions?.suppressAllErrors) return;
+        if (this.options.throw === true) {
+            throw new Error(err.message);
+        };
+        
         let error = { text: 'An error occurred', color: 'red' };
         if (type === 'failed') {
             error.text = 'Database failed to connect';
