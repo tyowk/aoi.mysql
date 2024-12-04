@@ -1,8 +1,3 @@
-> [!note]
-> **I made this package only for personal use, but you can still install this package if you want to use it.**
-
----
-
 # aoijs.mysql
 
 aoijs.mysql makes it effortless to connect your aoi.js Discord bot to a MySQL database. Leveraging the power of mysql2, you get fast and reliable database operations, perfectly suited for any aoi.js bot project.</p>
@@ -32,6 +27,7 @@ new Database(client, {
     debug: false                              // Set to true for debug information during development      # default is false
 });
 ```
+see [here](https://sidorares.github.io/node-mysql2/docs/examples/connections/create-pool#createpoolconfig) for more client options
 
 ---
 
