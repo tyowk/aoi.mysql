@@ -7,7 +7,7 @@ aoijs.mysql makes it effortless to connect your aoi.js Discord bot to a MySQL da
 ## Installation
 
 ```bash
-npm i aoijs.mysql
+npm install aoijs.mysql
 ```
 
 ---
@@ -59,7 +59,7 @@ new Database(client, {
 These 36 custom functions works like a normal existing functions *( only the name and inside the functions are different )* 
 
 And these functions can only work if you set `keepAoiDB` to true<br><br>
-```
+```bash
 $mysqlAdvanceCooldown
 $mysqlChannelCooldown
 $mysqlCloseTicket
