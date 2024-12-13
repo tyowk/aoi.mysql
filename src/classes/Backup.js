@@ -7,9 +7,9 @@ const success = (msg) => console.log(`[${chalk.green('BACKUP')}] :: ${msg}`);
 const backupProcess = (msg) => console.log(`[${chalk.yellow('PROCESS')}] :: ${msg}`);
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-module.exports = async (options, db) => {
-    const backupDir = path.join(process.cwd(), options.backup.directory);
-    if (!fs.existsSync(backupDir)) return error(`The "${chalk.red(options.backup.directory)}" folder does not exist.`);
+module.exports = async (directory, db) => {
+    const backupDir = path.join(process.cwd(), directory);
+    if (!fs.existsSync(backupDir)) return error(`The "${chalk.red(directory)}" folder does not exist.`);
     const directories = fs.readdirSync(backupDir);
     let totalKeys = 0;
     let index = 1;
