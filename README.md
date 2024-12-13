@@ -103,8 +103,17 @@ $mysqlUserLeaderBoard
 
 ## Migrating
 
-If you're considering transferring your aoi.db database to MySQL, **🚫 Migration Is Not Currently Possible!**
+If you have an existing aoi.db database, you can back it up or transfer its data to aoijs.mysql. Ensure that your setup is properly configured:
 
+```javascript
+new Database(client, {
+    . . .
+    backup: {
+        enable: true,             // Enable database transfer
+        directory: './database',  // Directory where your aoi.db data is located
+    }
+});
+```
 ---
 
 <div align="center">
