@@ -49,6 +49,13 @@ exports.Database = class Database extends EventEmitter {
             if (this.options.tables.includes('__aoijs_vars__')) throw new Error('"__aoijs_vars__" is reserved as a table name and cannot be used.');
             for (const table of this.tables) { await this.prepare(table); };
             this.emit('connect', this.options.keepAoiDB ? this.client.mysql : this.client.db, this.client);
+            if (this.options.backup && this.options.backup?.enable) {
+                try {
+                    const backupProcess = require('./Backup.js');
+                    backupProcess(this.options.backup?.directory, this);
+                } catch (err) { this.#handleError(err) }
+            };
+            
             if (this.client?.aoiOptions?.aoiLogs === false) return;
             createConsoleMessage([
                 { text: `Latency: ${await this.ping()}ms`, textColor: 'white' },
