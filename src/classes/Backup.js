@@ -79,3 +79,9 @@ module.exports = async (options, db) => {
     }
     success(`${chalk.cyan('Transfer completed!')}`);
 };
+
+/**
+ * CREDITS
+ * Thanks to fafa ✨
+ * https://github.com/faf4a/aoi.mongo
+ */
